@@ -37,7 +37,7 @@ document.addEventListener('mouseup',(event)=>{
 //buttons
 let download = document.getElementById("download")
 download.addEventListener('click', ()=>{
-    Canvas2Image.saveAsPNG(canvasElement, canvasElement.width, canvasElement.height, 'wellplayed')
+    Canvas2Image.saveAsPNG(canvasElement2, canvasElement.width, canvasElement.height, 'wellplayed')
 })
 
 // secondCanvas.fillStyle = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;  
@@ -75,7 +75,7 @@ function callback(){
         mousePosLast = [mousePos[0],mousePos[1]]
     }
     if (drawing){
-        console.log(mousePos[0],mousePos[1])
+        // console.log(mousePos[0],mousePos[1])
         secondCanvas.beginPath()
         secondCanvas.moveTo(mousePosLast[0],mousePosLast[1])
         secondCanvas.lineTo(mousePos[0],mousePos[1])

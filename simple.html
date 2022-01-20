@@ -5,6 +5,7 @@
          <title>Live2D merge facemesh Simple</title>
         </meta>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=4.0"></meta>
+        <!-- facemesh -->
         <!-- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
@@ -13,12 +14,27 @@
         <script src="./indexScript/control_utils.js" crossorigin="anonymous"></script>
         <script src="./indexScript/drawing_utils.js" crossorigin="anonymous"></script>
         <script src="./indexScript/face_mesh.js" crossorigin="anonymous"></script>
+        <!-- streaming -->
+        <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+
     </head>
 
     <body onload="Simple()">
-        <canvas id="glcanvas" width = "512px" height="512px" style="border:dashed 1px #CCC; margin-left: 240px; background-color: lightgreen;"></canvas>
-        <br> <button id="changeChar"> change </button>
+        <!-- old live2d template -->
+        <!-- <canvas id="glcanvas" width = "384px" height="512px" style="background: url('samplebg.webp'); border:dashed 1px #CCC; margin-left: 20px;"></canvas>
         <div id="myconsole" style="color:#BBB">---- Log ----</div>
+        <canvas id="glcanvas2" width = "384px" height="512px" style="background: url('samplebg.webp'); border:dashed 1px #CCC; margin-left: 20px;"></canvas>
+        <button id='showCanvas1'>showCanvas1</button>
+        <button id='showCanvas2'>showCanvas2</button> -->
+
+        <!-- new live2d template -->
+        <button onclick="button_click()">キャンバス作成</button>
+        <button onclick="live2d_dispose()">全て破棄</button>
+        <div id="can"></div>
+
+        <div id="myconsole" style="color:#BBB">---- Log ----</div>
+
+        <button id="sendMsgIO">io test butt</button>
 
         <!-- facemesh stuff -->       
         <div class="container">
@@ -47,12 +63,15 @@
         </div>
         <div class="control-panel"></div>
 
+        <!-- <button id="delbtnV-fpNbE0Sh7_DTLtAAAB" onclick="canvas_del(glcanvasV-fpNbE0Sh7_DTLtAAAB,delbtnV-fpNbE0Sh7_DTLtAAAB,V-fpNbE0Sh7_DTLtAAAB)">wtf</button> -->
+
         <!-- Live2D Library -->
         <script src="src/live2d.min.js"></script>
 
         <!-- User's Script -->
-        <script src="src/FaceMeshScript.js"></script>
-        <script src="src/Simple.js"></script>
-        <script src="src/main.js"></script>
+        <script type="text/javascript" src="src/FaceMeshScript.js"></script>
+        <script type="text/javascript" src="src/SimpleMultiCanvas.js"></script>
+        <script type="text/javascript" src="src/MainListSave.js"></script>
+        <!-- <script type="text/javascript" src="src/Main.js"></script> -->
     </body>
 </html>

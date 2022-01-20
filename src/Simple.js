@@ -7,7 +7,11 @@
 *  (c) Live2D Inc. All rights reserved.
 */
 
-//import sth from faceMesh
+var showCanvas1 = document.getElementById('showCanvas1');
+var canvas2 = document.getElementById("glcanvas2");
+
+
+
 
 // JavaScriptで発生したエラーを取得
 window.onerror = function(msg, url, line, col, error) {
@@ -121,6 +125,7 @@ var Simple = function() {
 
     // Init and start Loop
     Simple.initLoop(canvas);
+
 };
 
 
@@ -155,6 +160,7 @@ Simple.initLoop = function(canvas/*HTML5 canvasオブジェクト*/)
 
     // テクスチャの読み込み
     var loadCount = 0;
+    console.log(modelDef.textures)
     for(var i = 0; i < modelDef.textures.length; i++){
         (function ( tno ){// 即時関数で i の値を tno に固定する（onerror用)
             loadedImages[tno] = new Image();
@@ -211,12 +217,13 @@ Simple.draw = function(gl/*WebGLコンテキスト*/)
         loadedImages = null;
 
         // 表示位置を指定するための行列を定義する
-        var s = 3.0 / live2DModel.getCanvasWidth(); //canvasの横幅を-1..1区間に収める
+        var sx = 4.0 / live2DModel.getCanvasWidth(); //canvasの横幅を-1..1区間に収める
+        var sy = 4.0 / live2DModel.getCanvasHeight(); //canvasの横幅を-1..1区間に収める
         var matrix4x4 = [
-            s, 0, 0, 0,
-            0,-s, 0, 0,
+            sx, 0, 0, 0,
+            0,-sy, 0, 0,
             0, 0, 1, 0,
-           -1.5, 1, 0, 1
+           -2, 1, 0, 1
         ];
         live2DModel.setMatrix(matrix4x4);
     }
@@ -224,13 +231,11 @@ Simple.draw = function(gl/*WebGLコンテキスト*/)
     // キャラクターのパラメータを適当に更新
     var t = UtSystem.getUserTimeMSec() * 0.001 * 2 * Math.PI; //1秒ごとに2π(1周期)増える
     var cycle = 3.0; //パラメータが一周する時間(秒)
-    var cycleEyeBall = 0.1
-    var cycleHead = 0.5
     // head
     // PARAM_ANGLE_Xのパラメータが[cycle]秒ごとに-30から30まで変化する
     // -30から30の値を加える
     if (headX){
-        live2DModel.setParamFloat("PARAM_ANGLE_X", headX, 0.1);
+        live2DModel.setParamFloat("PARAM_ANGLE_X", headX, 1);
     }
     else{
         live2DModel.setParamFloat("PARAM_ANGLE_X", 0, 1);
@@ -410,3 +415,6 @@ Simple.myerror = function(msg/*string*/)
     console.error(msg);
     Simple.mylog( "<span style='color:red'>" + msg + "</span>");
 };
+
+
+// self summon canvas2

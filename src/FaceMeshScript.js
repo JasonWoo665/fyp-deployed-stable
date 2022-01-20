@@ -1,9 +1,26 @@
+// main facemesh stuff is here
 const videoElement = document.getElementsByClassName('input_video')[0];
 const canvasElement = document.getElementsByClassName('output_canvas')[0];
 const canvasCtx = canvasElement.getContext('2d');
 
 // variables for live2d
-var headZ, headY, headX, leftEyeOpenRatio, rightEyeOpenRatio, eyeDirX, eyeDirY, mouthOpen, mouthForm
+var headZ, headY, headX, leftEyeOpenRatio, rightEyeOpenRatio, eyeDirX, eyeDirY, mouthOpen, mouthForm;
+var renderDataObj = {
+  data:{
+    headZ: headZ, 
+    headY: headY, 
+    headX: headX, 
+    leftEyeOpenRatio: leftEyeOpenRatio,
+    rightEyeOpenRatio: rightEyeOpenRatio, 
+    eyeDirX: eyeDirX, 
+    eyeDirY: eyeDirY, 
+    mouthOpen: mouthOpen, 
+    mouthForm: mouthForm, 
+  }, 
+  aspect: {
+    socketOwner: null
+  }
+};
 let eyeOpenThreshold =0.5
 window.addEventListener("click", function(){ console.log(eyeDirY) });
 
@@ -109,6 +126,24 @@ function onResults(results) {
     canvasCtx.lineTo(mouthBot[0]*canvasElement.width,mouthBot[1]*canvasElement.height);
     canvasCtx.lineTo(canvasElement.width,canvasElement.height);
     canvasCtx.stroke()
+
+    // output the stream object
+    renderDataObj = {
+      data:{
+        headZ: headZ, 
+        headY: headY, 
+        headX: headX, 
+        leftEyeOpenRatio: leftEyeOpenRatio,
+        rightEyeOpenRatio: rightEyeOpenRatio, 
+        eyeDirX: eyeDirX, 
+        eyeDirY: eyeDirY, 
+        mouthOpen: mouthOpen, 
+        mouthForm: mouthForm, 
+      }, 
+      aspect: {
+        socketOwner: null
+      }
+    };
 
   }
   canvasCtx.restore();
