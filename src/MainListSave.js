@@ -53,7 +53,7 @@ function newCanvas(socketID){
 
 
 // streaming stuff - client side
-const socket = io("https://i7.cs.hku.hk/~chwoo/simple:80")
+const socket = io("http://localhost:3000")
 let localClientList = []        // temp of list of id of connected sockets 
 let localDataList = []          // list of avatar data
 let localDisplayAvatars = []    // list of id of connected sockets
