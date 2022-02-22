@@ -96,17 +96,24 @@ body{
         margin: 7px 7px 0px 7px;
       }
     }
-    #send-container{
+    .chatWrap{
+      @include verticle-wrap();
       .ChatTarget{
         @include underline-box(rgb(150, 150, 150), 1px);
-      }
-      .ChatTarget{
         @include chatText(white, 7px);
       }
-      input#message-input{
-        @include chatText(lightgrey, 7px);
-        @include noDefaultAppearance;
-        border-radius: 7px;
+      #send-container{
+        @include inline-wrap();
+        input#message-input{
+          @include chatText(lightgrey, 7px);
+          @include noDefaultAppearance;
+          border-radius: 7px;
+        }
+        button#sendButton{
+          display: inline; 
+          width: 30px; 
+          height: 100%;
+        }
       }
     }
 }

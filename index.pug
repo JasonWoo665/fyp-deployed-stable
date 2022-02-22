@@ -26,9 +26,11 @@ head
         .topic= "Chat room"
         .msg1= "this is :"
         .msg2= "a message"
-    form#send-container
+    .chatWrap
         .ChatTarget= " ^ To Everyone"
-        input#message-input(type='text', placeholder= 'Send a message')
+        form#send-container
+            input#message-input(type='text', placeholder= 'Send a message')
+            button#sendButton
 // facemesh stuff
 .container(style='display: none;')
     video.input_video(style='display: none;')

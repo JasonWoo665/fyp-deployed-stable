@@ -11,7 +11,7 @@ const io = require('socket.io')(server, {
     },
 })
 
-let clientList = []
+let clientList = [] 
 let dataList = []
 const users = {} // just for chat room server side, may merge with clientList later for simplicity
 
@@ -77,14 +77,10 @@ io.on('connection', (socket) => {
     });
 
     // start of chat room server side
-    socket.on('new-user', name => {
-        users[socket.id] = name
-        socket.broadcast.emit('user-connected', name)
+    socket.on('send-chat-message', message => {
+        socket.broadcast.emit('chat-message', { message: message, from: socket.id})
     })
-        socket.on('send-chat-message', message => {
-        socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] })
-    })
-        socket.on('disconnect', () => {
+    socket.on('disconnect', () => {
         socket.broadcast.emit('user-disconnected', users[socket.id])
         delete users[socket.id]
     })
