@@ -18,7 +18,8 @@ var renderDataObj = {
     mouthForm: mouthForm, 
   }, 
   aspect: {
-    socketOwner: null
+    socketOwner: null,
+    background: null
   }
 };
 let eyeOpenThreshold =0.5
@@ -126,7 +127,7 @@ function onResults(results) {
     canvasCtx.lineTo(mouthBot[0]*canvasElement.width,mouthBot[1]*canvasElement.height);
     canvasCtx.lineTo(canvasElement.width,canvasElement.height);
     canvasCtx.stroke()
-
+    
     // output the stream object
     renderDataObj = {
       data:{
@@ -141,7 +142,8 @@ function onResults(results) {
         mouthForm: mouthForm, 
       }, 
       aspect: {
-        socketOwner: null
+        socketOwner: null,
+        background: null
       }
     };
 

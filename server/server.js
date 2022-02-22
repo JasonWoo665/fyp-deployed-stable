@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
     // exchange avatar data
     setInterval(() => {
         io.emit('gatherAvatarData');
-    }, 10);
+    }, 1000);
     // manipulate asynchronous data reuturned from clients
     socket.on('returnedAvatarData', (userData) => {
         let initData = true

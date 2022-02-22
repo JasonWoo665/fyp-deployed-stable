@@ -15,6 +15,7 @@ head
         include ./styles/style.css
 // left side bar
 .main-menu
+    textarea#setBackground(name="setBackground" rows="1" cols="30" placeholder="Paste image url here and press enter")
 
 // main canvas rendering area
 #can
@@ -28,7 +29,7 @@ head
     .chatWrap
         .ChatTarget= " ^ To Everyone"
         #send-container
-            textarea#message-input(name="w3review" rows="1" cols="50" placeholder="Send a message")
+            textarea#message-input(name="message-input" rows="1" cols="50" placeholder="Send a message")
             #sendButton
 // facemesh stuff
 .container(style='display: none;')

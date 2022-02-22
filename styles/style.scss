@@ -78,7 +78,9 @@ body{
 .main-menu{
     @include verticle-wrap;
     @include debug-box;
-    width: 100px;
+    #setBackground{
+      @include chatText;
+    }
 }
 .text-chat-room{
     @include verticle-wrap;
@@ -131,4 +133,10 @@ body{
         }
       }
     }
+}
+#can{
+  canvas{
+    background-image: url('https://wallpapercave.com/dwp2x/wp4785026.jpg');
+    background-size: cover;
+  }
 }

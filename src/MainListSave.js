@@ -52,6 +52,7 @@ const socket = io("http://localhost:3000")
 let localClientList = []        // temp of list of id of connected sockets 
 let localDataList = []          // list of avatar data
 let localDisplayAvatars = []    // list of id of connected sockets
+let selfBackgroundImageCanvas = 'https://wallpapercave.com/dwp2x/wp4785026.jpg';
 // data ready to broadcast for rendering
 // renderDataObj: headZ, headY, headX, leftEyeOpenRatio, rightEyeOpenRatio, eyeDirX, eyeDirY, mouthOpen, mouthForm
 // update the client list on conenct and disconnect
@@ -85,6 +86,7 @@ socket.on('someoneDisconnect', (clientList)=>{
 socket.on('gatherAvatarData', ()=>{
     if (renderDataObj.data.headZ!=undefined){ //check if data initialzied or not
         renderDataObj.aspect.socketOwner = socket.id 
+        renderDataObj.aspect.background = selfBackgroundImageCanvas // also provide background info
         // console.log(renderDataObj)
         socket.emit('returnedAvatarData', renderDataObj)
     }
@@ -95,6 +97,7 @@ socket.on('usefulAvatarData', (dataList)=>{
     for (const count in dataList){
         chara[0][dataList[count].aspect.socketOwner].renderDataObj=dataList[count]
     }
+    console.log(localDataList)
 });
 
 // text chat function
@@ -131,4 +134,17 @@ socket.on('chat-message', (message_from)=>{
 
 });
 
+// background setting stuff
+let setBackground = document.getElementById('setBackground');
+setBackground.addEventListener("keyup", function(event){
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        let message = setBackground.value
+        if (message.charAt(message.length - 1)=="\n"){
+            message = message.substring(0, message.length - 1);
+        }
+        selfBackgroundImageCanvas = message
+        setBackground.value = "";
+    }
+});
 

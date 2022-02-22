@@ -29,7 +29,11 @@ body {
           flex-direction: column;
   border-style: solid;
   border-color: black;
-  width: 100px;
+}
+
+.main-menu #setBackground {
+  padding: 5px;
+  background-color: white;
 }
 
 .text-chat-room {
@@ -139,5 +143,10 @@ body {
   border-radius: 5px;
   background-color: #2e99eb;
   cursor: pointer;
+}
+
+#can canvas {
+  background-image: url("https://wallpapercave.com/dwp2x/wp4785026.jpg");
+  background-size: cover;
 }
 /*# sourceMappingURL=style.css.map */

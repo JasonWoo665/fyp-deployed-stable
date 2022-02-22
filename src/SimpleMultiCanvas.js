@@ -30,7 +30,8 @@ function Simple(canvas, canvasId, no) {
           mouthForm: null, 
         }, 
         aspect: {
-          socketOwner: no
+          socketOwner: no,
+          background: null
         }
     };
 
@@ -281,6 +282,13 @@ Simple.prototype.draw = function(gl/* WebGLコンテキスト */)
         this.live2DModel.setParamFloat("PARAM_HAIR_BACK", this.renderDataObj.data.headX/30, 1);
         this.live2DModel.setParamFloat("PARAM_HAIR_SIDE", this.renderDataObj.data.headX/30, 1);
     }
+
+    // also update the background
+    let thisCanvasID = 'glcanvas' + this.renderDataObj.aspect.socketOwner;
+    document.getElementById(thisCanvasID).style.backgroundImage = `url('${this.renderDataObj.aspect.background}')`
+    console.log(this.renderDataObj.aspect.background)
+    // console.log(document.getElementById(thisCanvasID).style.backgroundImage)
+
     // // browse: -1~1
     // this.live2DModel.setParamFloat("PARAM_BROW_L_ANGLE", 1 * Math.cos(t/cycle), 1);
     // this.live2DModel.setParamFloat("PARAM_BROW_R_ANGLE", 1 * Math.cos(t/cycle), 1);
