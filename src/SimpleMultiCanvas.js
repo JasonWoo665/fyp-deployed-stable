@@ -15,6 +15,8 @@ window.onerror = function(msg, url, line, col, error) {
 
 function Simple(canvas, canvasId, no) {
     // stream of data for updating locations
+
+    // the object used to control the motion of an avatar
     this.renderDataObj = {
         data:{
           headZ: null, 

@@ -52,8 +52,8 @@ io.on('connection', (socket) => {
     // exchange avatar data
     setInterval(() => {
         io.emit('gatherAvatarData');
-    }, 1000);
-    // manipulate asynchronous data
+    }, 10);
+    // manipulate asynchronous data reuturned from clients
     socket.on('returnedAvatarData', (userData) => {
         let initData = true
         // overwrite data respectively
@@ -64,7 +64,6 @@ io.on('connection', (socket) => {
             }
         }
         // remove the data if the user is no longer in the chatrm
-
 
         // in case the data is not initialized
         if (initData){

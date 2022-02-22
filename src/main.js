@@ -78,19 +78,19 @@ function button_click(){
 
 
 
-function live2d_dispose(){
-    var charanm = chara.length;
-    for(var i = 0; i < charanm; i++){
-        if(typeof chara[i] != "undefined"){
-            var glcanvas = document.getElementById("glcanvas" + i);
-            var dlbtn = document.getElementById("delbtn" + i);
-            canvas_del(glcanvas, dlbtn, i);            
-        }
-    }
-    chara = [];
-    canvas = [];
-    Live2D.dispose();
-}
+// function live2d_dispose(){
+//     var charanm = chara.length;
+//     for(var i = 0; i < charanm; i++){
+//         if(typeof chara[i] != "undefined"){
+//             var glcanvas = document.getElementById("glcanvas" + i);
+//             var dlbtn = document.getElementById("delbtn" + i);
+//             canvas_del(glcanvas, dlbtn, i);            
+//         }
+//     }
+//     chara = [];
+//     canvas = [];
+//     Live2D.dispose();
+// }
 
 // streaming stuff - client side
 const socket = io("http://localhost:3000")

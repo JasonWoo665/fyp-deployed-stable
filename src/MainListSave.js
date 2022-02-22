@@ -30,18 +30,13 @@ function newCanvas(socketID){
     ele.id = "glcanvas" + socketID;
     document.getElementById('can').appendChild(ele);
     // 削除ボタン
-    var delbtn = document.createElement('button');
-    delbtn.id = "delbtn" + socketID;
-    delbtn.addEventListener('click', ()=>{
-        canvas_del(ele.id,delbtn.id,socketID)
-    })
-    // try{
-    //     delbtn.setAttribute("onclick","canvas_del(" + (ele.id).toString() + "," + (delbtn.id).toString() + "," + socketID.toString() + ")");
-    // } catch (e){
-    //     console.log(e)
-    // }
-    delbtn.innerHTML = "キャンバス削除";
-    document.getElementById('can').appendChild(delbtn);
+    // var delbtn = document.createElement('button');
+    // delbtn.id = "delbtn" + socketID;
+    // delbtn.addEventListener('click', ()=>{
+    //     canvas_del(ele.id,delbtn.id,socketID)
+    // })
+    // delbtn.innerHTML = "キャンバス削除";
+    // document.getElementById('can').appendChild(delbtn);
     // Canvasを取得する
     canvas[0][socketID] = document.getElementById(ele.id);
     canvas[0][socketID].width = canvas[0][socketID].height = CAN_SIZE;
