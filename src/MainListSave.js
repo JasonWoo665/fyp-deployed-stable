@@ -95,7 +95,10 @@ socket.on('usefulAvatarData', (dataList)=>{
     for (const count in dataList){
         chara[0][dataList[count].aspect.socketOwner].renderDataObj=dataList[count]
     }
-    
 });
+
+// text chat function
+let sendButton = document.getElementById
+socket.on('send-chat-message')
 
 
