@@ -54,11 +54,6 @@ let localDataList = []          // list of avatar data
 let localDisplayAvatars = []    // list of id of connected sockets
 // data ready to broadcast for rendering
 // renderDataObj: headZ, headY, headX, leftEyeOpenRatio, rightEyeOpenRatio, eyeDirX, eyeDirY, mouthOpen, mouthForm
-console.log(renderDataObj)
-const socketButt = document.getElementById('sendMsgIO')
-socketButt.addEventListener('click', e=>{
-    console.log('i am '+socket.id)
-})
 // update the client list on conenct and disconnect
 socket.on('newConnect', (clientList)=>{
     localClientList = clientList

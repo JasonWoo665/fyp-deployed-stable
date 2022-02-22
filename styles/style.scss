@@ -1,0 +1,112 @@
+// responsive vars
+$pc-media:960px;
+$pcs-media:959px;
+$pad-media:760px;
+$pads-media:759px;
+$phone-media:480px;
+$phones-media:479px;
+*{
+  font-family: Arial, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  color: black
+}
+@mixin noDefaultAppearance ($value: none) {
+  -webkit-appearance:     $value;
+  -moz-appearance:        $value;
+  -ms-appearance:         $value;
+  -o-appearance:          $value;
+  appearance:             $value;
+  outline:                $value;
+  outline-color: transparent;
+  outline-style: none;
+  resize: none;
+}
+@mixin pc-width() {
+  @media all and (min-width: $pc-media) {
+    @content;
+  }
+}
+@mixin pad-width() {
+  @media all and (min-width:$pad-media) and (max-width: $pcs-media) {
+    @content;
+  }
+}
+@mixin small-pad-width() {
+  @media all and (min-width: $phone-media) and (max-width:$pads-media) {
+    @content;
+  }
+}
+@mixin phone-width() {
+  @media all and (max-width: $phones-media) {
+    @content;
+  }
+}
+// custom styles
+@mixin debug-box{
+    border-style: solid;
+    border-color: black;
+}
+@mixin inline-wrap {
+    display: flex;
+    flex-direction: row;
+}
+@mixin verticle-wrap{
+    display: flex;
+    flex-direction: column;
+}
+@mixin underline-box($underlineColor, $borderWidth: 2px){
+    border-bottom-color: $underlineColor;
+    border-width: 0px 0px $borderWidth 0px;
+    border-style: solid;
+}
+@mixin chatText($bgcolor: white, $padding: 5px){
+  padding: $padding;
+  background-color: $bgcolor;
+}
+body{
+    background: rgb(34, 25, 158);
+    @include inline-wrap();
+    justify-content: space-between;
+}
+
+.main-menu{
+    @include verticle-wrap;
+    @include debug-box;
+    width: 100px;
+}
+.text-chat-room{
+    @include verticle-wrap;
+    background-color: white;
+    justify-content: space-between;
+    .showmsg{
+      @include verticle-wrap;
+      align-items: flex-start;
+      justify-content: flex-start;
+      .topic{
+        @include chatText(rgb(223, 223, 223));
+        @include underline-box(grey);
+        width: calc(100% - 10px);
+        
+        text-align: center;
+      }
+      div[class^='msg'], div[class*=' msg']{
+        @include chatText(palevioletred);
+        border-radius: 5px;
+        margin: 7px 7px 0px 7px;
+      }
+    }
+    #send-container{
+      .ChatTarget{
+        @include underline-box(rgb(150, 150, 150), 1px);
+      }
+      .ChatTarget{
+        @include chatText(white, 7px);
+      }
+      input#message-input{
+        @include chatText(lightgrey, 7px);
+        @include noDefaultAppearance;
+        border-radius: 7px;
+      }
+    }
+}

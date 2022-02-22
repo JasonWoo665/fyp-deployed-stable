@@ -1,0 +1,107 @@
+* {
+  font-family: Arial, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  color: black;
+}
+
+body {
+  background: #22199e;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.main-menu {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  border-style: solid;
+  border-color: black;
+  width: 100px;
+}
+
+.text-chat-room {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  background-color: white;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.text-chat-room .showmsg {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+.text-chat-room .showmsg .topic {
+  padding: 5px;
+  background-color: #dfdfdf;
+  border-bottom-color: grey;
+  border-width: 0px 0px 2px 0px;
+  border-style: solid;
+  width: calc(100% - 10px);
+  text-align: center;
+}
+
+.text-chat-room .showmsg div[class^='msg'], .text-chat-room .showmsg div[class*=' msg'] {
+  padding: 5px;
+  background-color: palevioletred;
+  border-radius: 5px;
+  margin: 7px 7px 0px 7px;
+}
+
+.text-chat-room #send-container .ChatTarget {
+  border-bottom-color: #969696;
+  border-width: 0px 0px 1px 0px;
+  border-style: solid;
+}
+
+.text-chat-room #send-container .ChatTarget {
+  padding: 7px;
+  background-color: white;
+}
+
+.text-chat-room #send-container input#message-input {
+  padding: 7px;
+  background-color: lightgrey;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  outline: none;
+  outline-color: transparent;
+  outline-style: none;
+  resize: none;
+  border-radius: 7px;
+}
+/*# sourceMappingURL=style.css.map */

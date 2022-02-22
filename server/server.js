@@ -19,9 +19,13 @@ app.use("/src", express.static('../src/'));
 app.use("/indexScript", express.static('../indexScript/'));
 app.use("/locateFile", express.static('../locateFile/'));
 app.use("/assets", express.static('../assets/'));
+// set view engine to pug
+app.set("view engine", "pug")
+app.set("views", "../")
 
 app.get('/', (req, res) => {
-    res.sendFile('simple.html', { root: '../' })
+    // res.sendFile('simple.html', { root: '../' })
+    res.render('index',{ title: 'Chat room '+req.id})
 });
 
 io.on('connection', (socket) => {

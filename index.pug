@@ -1,0 +1,54 @@
+doctype html
+head
+    // rendered by pug
+    meta(charset='UTF-8')
+    title Live2D merge facemesh Simple
+    meta(name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=4.0')
+    // facemesh
+    script(src='./indexScript/camera_utils.js' crossorigin='anonymous')
+    script(src='./indexScript/control_utils.js' crossorigin='anonymous')
+    script(src='./indexScript/drawing_utils.js' crossorigin='anonymous')
+    script(src='./indexScript/face_mesh.js' crossorigin='anonymous')
+    // streaming
+    script(src='https://cdn.socket.io/4.4.1/socket.io.min.js' integrity='sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H' crossorigin='anonymous')
+    style 
+        include ./styles/style.css
+// left side bar
+.main-menu
+
+// main canvas rendering area
+#can
+#myconsole(style='color:#BBB; display: none') ---- Log ----
+
+// text chat room
+.text-chat-room
+    .showmsg
+        .topic= "Chat room"
+        .msg1= "this is :"
+        .msg2= "a message"
+    form#send-container
+        .ChatTarget= " ^ To Everyone"
+        input#message-input(type='text', placeholder= 'Send a message')
+// facemesh stuff
+.container(style='display: none;')
+    video.input_video(style='display: none;')
+    .canvas-container
+        canvas.output_canvas(width='1280px' height='700px')  
+    .loading
+        .spinner
+        .message Loading
+    a.abs.logo(href='http://www.mediapipe.dev' target='_blank')
+        div(style='display: flex; align-items: center; bottom: 0; right: 10px')
+            span.title MediaPipe
+    .shoutout
+        div
+            a(href='https://solutions.mediapipe.dev/face_mesh')
+                | Click here for more info
+.control-panel
+
+// Live2D Library
+script(src='src/live2d.min.js')
+// User's Script
+script(type='text/javascript' src='src/FaceMeshScript.js')
+script(type='text/javascript' src='src/SimpleMultiCanvas.js')
+script(type='text/javascript' src='src/MainListSave.js')

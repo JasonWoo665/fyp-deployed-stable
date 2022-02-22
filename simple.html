@@ -6,10 +6,6 @@
         </meta>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=4.0"></meta>
         <!-- facemesh -->
-        <!-- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script> -->
         <script src="./indexScript/camera_utils.js" crossorigin="anonymous"></script>
         <script src="./indexScript/control_utils.js" crossorigin="anonymous"></script>
         <script src="./indexScript/drawing_utils.js" crossorigin="anonymous"></script>
@@ -20,19 +16,9 @@
     </head>
 
     <body onload="Simple()">
-        <!-- old live2d template -->
-        <!-- <canvas id="glcanvas" width = "384px" height="512px" style="background: url('samplebg.webp'); border:dashed 1px #CCC; margin-left: 20px;"></canvas>
-        <div id="myconsole" style="color:#BBB">---- Log ----</div>
-        <canvas id="glcanvas2" width = "384px" height="512px" style="background: url('samplebg.webp'); border:dashed 1px #CCC; margin-left: 20px;"></canvas>
-        <button id='showCanvas1'>showCanvas1</button>
-        <button id='showCanvas2'>showCanvas2</button> -->
-
-        <!-- new live2d template -->
-        <!-- <button onclick="button_click()">キャンバス作成 don't click these buttons</button>
-        <button onclick="live2d_dispose()">全て破棄 don't click these buttons</button> -->
         <div id="can"></div>
 
-        <div id="myconsole" style="color:#BBB">---- Log ----</div>
+        <div id="myconsole" style="color:#BBB; display: none">---- Log ----</div>
 
         <button id="sendMsgIO">io test butt</button>
         
