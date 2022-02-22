@@ -24,13 +24,12 @@ head
 .text-chat-room
     .showmsg
         .topic= "Chat room"
-        .msg1= "this is :"
-        .msg2= "a message"
+        // some more appended .msg and .mymsg here
     .chatWrap
         .ChatTarget= " ^ To Everyone"
-        form#send-container
-            input#message-input(type='text', placeholder= 'Send a message')
-            button#sendButton
+        #send-container
+            textarea#message-input(name="w3review" rows="1" cols="50" placeholder="Send a message")
+            #sendButton
 // facemesh stuff
 .container(style='display: none;')
     video.input_video(style='display: none;')

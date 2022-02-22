@@ -44,6 +44,7 @@ body {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  border-radius: 5px;
 }
 
 .text-chat-room .showmsg {
@@ -79,6 +80,15 @@ body {
   margin: 7px 7px 0px 7px;
 }
 
+.text-chat-room .showmsg div[class^='mymsg'], .text-chat-room .showmsg div[class*=' mymsg'] {
+  padding: 5px;
+  background-color: #7fb8fa;
+  border-radius: 5px;
+  -ms-flex-item-align: end;
+      align-self: flex-end;
+  margin: 7px 7px 0px 7px;
+}
+
 .text-chat-room .chatWrap {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -90,11 +100,11 @@ body {
 }
 
 .text-chat-room .chatWrap .ChatTarget {
-  border-bottom-color: #969696;
-  border-width: 0px 0px 1px 0px;
-  border-style: solid;
   padding: 7px;
   background-color: white;
+  border-bottom-color: #cccccc;
+  border-width: 3px 0px 0px 0px;
+  border-style: solid;
 }
 
 .text-chat-room .chatWrap #send-container {
@@ -107,7 +117,7 @@ body {
           flex-direction: row;
 }
 
-.text-chat-room .chatWrap #send-container input#message-input {
+.text-chat-room .chatWrap #send-container #message-input {
   padding: 7px;
   background-color: lightgrey;
   -webkit-appearance: none;
@@ -122,9 +132,12 @@ body {
   border-radius: 7px;
 }
 
-.text-chat-room .chatWrap #send-container button#sendButton {
+.text-chat-room .chatWrap #send-container #sendButton {
   display: inline;
   width: 30px;
   height: 100%;
+  border-radius: 5px;
+  background-color: #2e99eb;
+  cursor: pointer;
 }
 /*# sourceMappingURL=style.css.map */

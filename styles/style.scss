@@ -60,6 +60,11 @@ $phones-media:479px;
     border-width: 0px 0px $borderWidth 0px;
     border-style: solid;
 }
+@mixin upperline-box($upperlineColor, $borderWidth: 2px){
+    border-bottom-color: $upperlineColor;
+    border-width: $borderWidth 0px 0px 0px;
+    border-style: solid;
+}
 @mixin chatText($bgcolor: white, $padding: 5px){
   padding: $padding;
   background-color: $bgcolor;
@@ -79,6 +84,7 @@ body{
     @include verticle-wrap;
     background-color: white;
     justify-content: space-between;
+    border-radius: 5px;
     .showmsg{
       @include verticle-wrap;
       align-items: flex-start;
@@ -95,24 +101,33 @@ body{
         border-radius: 5px;
         margin: 7px 7px 0px 7px;
       }
+      div[class^='mymsg'], div[class*=' mymsg']{
+        @include chatText(rgb(127, 184, 250));
+        border-radius: 5px;
+        align-self: flex-end;
+        margin: 7px 7px 0px 7px;
+      }
     }
     .chatWrap{
       @include verticle-wrap();
       .ChatTarget{
-        @include underline-box(rgb(150, 150, 150), 1px);
         @include chatText(white, 7px);
+        @include upperline-box(rgb(204, 204, 204), 3px);
       }
       #send-container{
         @include inline-wrap();
-        input#message-input{
+        #message-input{
           @include chatText(lightgrey, 7px);
           @include noDefaultAppearance;
           border-radius: 7px;
         }
-        button#sendButton{
+        #sendButton{
           display: inline; 
           width: 30px; 
           height: 100%;
+          border-radius: 5px;
+          background-color: #2e99eb;
+          cursor: pointer;
         }
       }
     }

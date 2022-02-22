@@ -98,7 +98,37 @@ socket.on('usefulAvatarData', (dataList)=>{
 });
 
 // text chat function
-let sendButton = document.getElementById
-socket.on('send-chat-message')
+let sendButton = document.getElementById('sendButton'); // the button to send message
+let msgBox = document.getElementById('message-input'); // the message text input field
+let showmsg = document.getElementsByClassName('showmsg')[0];
+
+function sendMessageHandler(message){
+    msgBox.value = "";
+    if (message.charAt(message.length - 1)=="\n"){
+        message = message.substring(0, message.length - 1);
+    }
+    socket.emit('send-chat-message', message)
+}
+msgBox.addEventListener("keyup", function(event){
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        sendMessageHandler(msgBox.value)
+    }
+});
+sendButton.addEventListener("click", function(event){
+        sendMessageHandler(msgBox.value)
+});
+
+socket.on('chat-message', (message_from)=>{
+    let msgOut = document.createElement('div');
+    if (message_from.from==socket.id){ // I sent out
+        msgOut.className = 'mymsg'
+    }else{ // someoone else sent out
+        msgOut.className = 'msg'
+    }
+    msgOut.textContent = message_from.message;
+    showmsg.appendChild(msgOut)
+
+});
 
 
