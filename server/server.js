@@ -35,21 +35,38 @@ app.use("/src", express.static('../src/'));
 app.use("/indexScript", express.static('../indexScript/'));
 app.use("/locateFile", express.static('../locateFile/'));
 app.use("/assets", express.static('../assets/'));
+app.use("/userMain", express.static('../'));
 // set view engine to pug
 app.set("view engine", "pug")
 app.set("views", "../")
 
-app.get('/', (req, res) => {
+let JWTidList = []
+
+app.post('/api/userMain', (req, res)=>{
+    let username = req.body.username;
+    let id = req.body.customID;
+
+    return res.json({status: 'ok', id: id, username: username})
+})
+
+app.get('/userMain/:id', (req, res) => {
     // res.sendFile('simple.html', { root: '../' })
-    res.render('index',{ title: 'Chat room '+req.id})
-    console.dir("coming id: ",req.id)
+    console.log('trying to get by '+req.params.id)
+    for (IDloop in JWTidList){
+        if (JWTidList[IDloop].id == req.params.id){
+            res.render('index',{ title: 'Chat room ', username: JWTidList[IDloop].username})
+        }
+    }
 });
+
 app.get('/register', (req, res) => {
-    res.render('register',{ title: 'Register for '+req.id})
+    res.render('register',{ loginUrl: 'login'})
 });
 app.get('/login', (req, res) => {
-    res.render('login',{ title: 'login for '+req.id})
+    res.render('login',{ registerUrl: 'register', mainAPIUrl: '/api/userMain', mainUrl: 'userMain'})
 });
+
+
 // handles login stuff
 app.post('/api/login', async (req, res)=>{
     const {username, password} = req.body
@@ -63,8 +80,11 @@ app.post('/api/login', async (req, res)=>{
             id: user._id, 
             username: user.username
         }, JWT_SECRET)
-
-        return res.json({status: 'ok', data: token})
+        JWTidList.push({
+            id: user._id,
+            username: username
+        });
+        return res.json({status: 'ok', data: token, username: user.username})
     }
     res.json({status: 'error', error: 'Invalid username/password'})
     // res.json({status: 'ok', data: `${username} : ${password}`})
@@ -91,7 +111,7 @@ app.post('/api/register', async (req, res)=>{
 })
 
 io.on('connection', (socket) => {
-    // update the user list when new usesr connects
+    // update the user list when new user connects
     if (!clientList.includes(socket.id)){
         clientList.push(socket.id)
         io.emit('newConnect', clientList);

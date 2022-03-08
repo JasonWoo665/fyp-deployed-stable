@@ -14,42 +14,43 @@ head
     style 
         include ./styles/style.css
 
-.title #{title}
+h1= title
+h1= "you are "+username
+.content-wrap
+    // left side bar
+    .main-menu
+        textarea#setBackground(name="setBackground" rows="1" cols="30" placeholder="Paste image url here and press enter")
 
-// left side bar
-.main-menu
-    textarea#setBackground(name="setBackground" rows="1" cols="30" placeholder="Paste image url here and press enter")
+    // main canvas rendering area
+    #can
+    #myconsole(style='color:#BBB; display: none') ---- Log ----
 
-// main canvas rendering area
-#can
-#myconsole(style='color:#BBB; display: none') ---- Log ----
-
-// text chat room
-.text-chat-room
-    .showmsg
-        .topic= "Chat room"
-        // some more appended .msg and .mymsg here
-    .chatWrap
-        .ChatTarget= " ^ To Everyone"
-        #send-container
-            textarea#message-input(name="message-input" rows="1" cols="50" placeholder="Send a message")
-            #sendButton
-// facemesh stuff
-.container(style='display: none;')
-    video.input_video(style='display: none;')
-    .canvas-container
-        canvas.output_canvas(width='1280px' height='700px')  
-    .loading
-        .spinner
-        .message Loading
-    a.abs.logo(href='http://www.mediapipe.dev' target='_blank')
-        div(style='display: flex; align-items: center; bottom: 0; right: 10px')
-            span.title MediaPipe
-    .shoutout
-        div
-            a(href='https://solutions.mediapipe.dev/face_mesh')
-                | Click here for more info
-.control-panel
+    // text chat room
+    .text-chat-room
+        .showmsg
+            .topic= "Chat room"
+            // some more appended .msg and .mymsg here
+        .chatWrap
+            .ChatTarget= " ^ To Everyone"
+            #send-container
+                textarea#message-input(name="message-input" rows="1" cols="50" placeholder="Send a message")
+                #sendButton
+    // facemesh stuff
+    .container(style='display: none;')
+        video.input_video(style='display: none;')
+        .canvas-container
+            canvas.output_canvas(width='1280px' height='700px')  
+        .loading
+            .spinner
+            .message Loading
+        a.abs.logo(href='http://www.mediapipe.dev' target='_blank')
+            div(style='display: flex; align-items: center; bottom: 0; right: 10px')
+                span.title MediaPipe
+        .shoutout
+            div
+                a(href='https://solutions.mediapipe.dev/face_mesh')
+                    | Click here for more info
+    .control-panel
 
 // Live2D Library
 script(src='src/live2d.min.js')

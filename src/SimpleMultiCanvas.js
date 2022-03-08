@@ -286,8 +286,7 @@ Simple.prototype.draw = function(gl/* WebGLコンテキスト */)
     // also update the background
     let thisCanvasID = 'glcanvas' + this.renderDataObj.aspect.socketOwner;
     document.getElementById(thisCanvasID).style.backgroundImage = `url('${this.renderDataObj.aspect.background}')`
-    console.log(this.renderDataObj.aspect.background)
-    // console.log(document.getElementById(thisCanvasID).style.backgroundImage)
+    // console.log(this.renderDataObj.aspect.background)
 
     // // browse: -1~1
     // this.live2DModel.setParamFloat("PARAM_BROW_L_ANGLE", 1 * Math.cos(t/cycle), 1);

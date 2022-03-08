@@ -13,6 +13,7 @@ function canvas_del(canid, delbtnid, i) {
     delete chara[0][i];
     delete canvas[0][i];
     // Live2D.deleteBuffer(i); //if sth not working then need to handle it, i.e. transform socketID into array max length:4294967296 
+    document.getElementById('can').removeChild(document.getElementById("namediv-"+canid));
     document.getElementById('can').removeChild(document.getElementById(canid));
     document.getElementById('can').removeChild(document.getElementById(delbtnid));
 }
@@ -28,6 +29,10 @@ function newCanvas(socketID){
     `;
 
     ele.id = "glcanvas" + socketID;
+    let namediv =  document.createElement('div');
+    namediv.id = "namediv-" + "glcanvas" + socketID;
+    namediv.textContent = socketID;
+    document.getElementById('can').appendChild(namediv); //name of the avatar
     document.getElementById('can').appendChild(ele);
     // 削除ボタン
     // var delbtn = document.createElement('button');
@@ -75,7 +80,6 @@ socket.on('someoneDisconnect', (clientList)=>{
     let difference = localDisplayAvatars
         .filter(x => !localClientList.includes(x))
         .concat(localClientList.filter(x => !localDisplayAvatars.includes(x)));
-    console.log(difference)
     for (const extraAvatar in difference){
         console.log(difference[extraAvatar])
         localDisplayAvatars.splice(localDisplayAvatars.indexOf(difference[extraAvatar]), 1);
@@ -87,7 +91,6 @@ socket.on('gatherAvatarData', ()=>{
     if (renderDataObj.data.headZ!=undefined){ //check if data initialzied or not
         renderDataObj.aspect.socketOwner = socket.id 
         renderDataObj.aspect.background = selfBackgroundImageCanvas // also provide background info
-        // console.log(renderDataObj)
         socket.emit('returnedAvatarData', renderDataObj)
     }
 });
@@ -97,7 +100,7 @@ socket.on('usefulAvatarData', (dataList)=>{
     for (const count in dataList){
         chara[0][dataList[count].aspect.socketOwner].renderDataObj=dataList[count]
     }
-    console.log(localDataList)
+    // console.log(localDataList)
 });
 
 // text chat function

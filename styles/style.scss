@@ -70,9 +70,32 @@ $phones-media:479px;
   background-color: $bgcolor;
 }
 body{
-    background: rgb(34, 25, 158);
+    background: #C8A2C8;
+    // @include inline-wrap();
+    justify-content: space-between;
+}
+h1{
+  text-align: center;
+  margin: 5px;
+}
+.content-wrap{
+  background: #8ac4f0;
     @include inline-wrap();
     justify-content: space-between;
+}
+
+#can{
+  @include verticle-wrap;
+  flex-direction: column-reverse;
+  .user-name{
+    margin: 5px;
+    text-align: center;
+  }
+  canvas{
+    border-style: double;
+    border-width: 5px;
+    border-color: white  
+  }
 }
 
 .main-menu{
