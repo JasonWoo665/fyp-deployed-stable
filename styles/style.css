@@ -115,7 +115,7 @@ h1 {
   padding: 5px;
   background-color: palevioletred;
   border-radius: 5px;
-  margin: 7px 7px 0px 7px;
+  margin: 7px 1px 1px 1px;
 }
 
 .text-chat-room .showmsg div[class^='mymsg'], .text-chat-room .showmsg div[class*=' mymsg'] {
@@ -125,6 +125,13 @@ h1 {
   -ms-flex-item-align: end;
       align-self: flex-end;
   margin: 7px 7px 0px 7px;
+}
+
+.text-chat-room .showmsg .wrapMsg {
+  padding: 5px;
+  background-color: #04e2e2;
+  border-radius: 5px;
+  margin: 3px 3px 0px 7px;
 }
 
 .text-chat-room .chatWrap {

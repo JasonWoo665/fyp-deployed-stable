@@ -4,6 +4,9 @@ var canvas = [{}];
 var i = 0;
 var CAN_SIZE = 340;
 
+// self defined data to link user name and socket id
+var name_id_list = [] //e.g. [{name: "henry", socketid: "12345"},...]
+
 // キャンバスと削除ボタン削除イベント
 function canvas_del(canid, delbtnid, i) {
     console.log(canid)
@@ -31,7 +34,7 @@ function newCanvas(socketID){
     ele.id = "glcanvas" + socketID;
     let namediv =  document.createElement('div');
     namediv.id = "namediv-" + "glcanvas" + socketID;
-    namediv.textContent = socketID;
+    // set the user name according to username-socketid list
     document.getElementById('can').appendChild(namediv); //name of the avatar
     document.getElementById('can').appendChild(ele);
     // 削除ボタン
@@ -50,8 +53,6 @@ function newCanvas(socketID){
     console.log(chara[0])
 }
 
-
-
 // streaming stuff - client side
 const socket = io("http://localhost:3000")
 let localClientList = []        // temp of list of id of connected sockets 
@@ -61,6 +62,20 @@ let selfBackgroundImageCanvas = 'https://wallpapercave.com/dwp2x/wp4785026.jpg';
 // data ready to broadcast for rendering
 // renderDataObj: headZ, headY, headX, leftEyeOpenRatio, rightEyeOpenRatio, eyeDirX, eyeDirY, mouthOpen, mouthForm
 // update the client list on conenct and disconnect
+socket.on('tellMeYourName', ()=>{
+    console.log('telling name as '+username)
+    socket.emit('myNameis', username)
+})
+socket.on('newNameList', (name_id_list_server)=>{
+    name_id_list = name_id_list_server
+    // add the user name to the div tag
+    for (const usernamei in name_id_list){
+        let divtag = document.getElementById("namediv-" + "glcanvas" + name_id_list[usernamei].socketid)
+        divtag.textContent = name_id_list[usernamei].name;
+    }
+    console.log('updated name list: ',name_id_list)
+})
+
 socket.on('newConnect', (clientList)=>{
     localClientList = clientList
     console.log('received '+localClientList)
@@ -126,14 +141,26 @@ sendButton.addEventListener("click", function(event){
 });
 
 socket.on('chat-message', (message_from)=>{
+    // search name from the socket id
     let msgOut = document.createElement('div');
     if (message_from.from==socket.id){ // I sent out
-        msgOut.className = 'mymsg'
-    }else{ // someoone else sent out
-        msgOut.className = 'msg'
+        msgOut.className = 'mymsg' //set the color
+        msgOut.textContent = message_from.message;
+        showmsg.appendChild(msgOut)
+    }else{ // someone else sent out
+        msgOut.className = 'msg' //set the color
+        msgOut.textContent = message_from.message;
+        let wrapMsg = document.createElement('div');
+        wrapMsg.className = 'wrapMsg' //set the color
+        for (const usernamei in name_id_list){
+            if (message_from.from == name_id_list[usernamei].socketid){
+                wrapMsg.textContent = name_id_list[usernamei].name;
+            }
+        }
+        wrapMsg.appendChild(msgOut)
+        showmsg.appendChild(wrapMsg)
+        
     }
-    msgOut.textContent = message_from.message;
-    showmsg.appendChild(msgOut)
 
 });
 

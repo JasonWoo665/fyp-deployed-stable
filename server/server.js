@@ -51,7 +51,6 @@ app.post('/api/userMain', (req, res)=>{
 
 app.get('/userMain/:id', (req, res) => {
     // res.sendFile('simple.html', { root: '../' })
-    console.log('trying to get by '+req.params.id)
     for (IDloop in JWTidList){
         if (JWTidList[IDloop].id == req.params.id){
             res.render('index',{ title: 'Chat room ', username: JWTidList[IDloop].username})
@@ -110,7 +109,21 @@ app.post('/api/register', async (req, res)=>{
 
 })
 
+// self defined data to link user name and socket id
+var name_id_list_server = [] //e.g. [{name: "henry", socketid: "12345"},...]
+
 io.on('connection', (socket) => {
+    // get the name of user
+    io.to(socket.id).emit('tellMeYourName');
+    socket.on('myNameis', (username)=>{
+        name_id_list_server.push({
+            name: username,
+            socketid: socket.id
+        })
+        console.log('server name list:', name_id_list_server)
+        // broadcast it
+        io.emit('newNameList', name_id_list_server);
+    })
     // update the user list when new user connects
     if (!clientList.includes(socket.id)){
         clientList.push(socket.id)
@@ -131,7 +144,15 @@ io.on('connection', (socket) => {
                 }
             }
         }
+        // also remove it from name list
+        for (const i in name_id_list_server){
+            if (name_id_list_server[i].socketid==socket.id){
+                name_id_list_server.splice(i, 1);
+            }
+        }
+        console.log('server name list:', name_id_list_server)
         // tell everyone the user left
+        socket.broadcast.emit('newNameList', name_id_list_server);
         socket.broadcast.emit('someoneDisconnect', clientList);
         console.log('<<< ['+socket.id+'] diconnect ---> '+clientList)
     });
