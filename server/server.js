@@ -159,7 +159,7 @@ io.on('connection', (socket) => {
     // exchange avatar data
     setInterval(() => {
         io.emit('gatherAvatarData');
-    }, 1000);
+    }, 10);
     // manipulate asynchronous data reuturned from clients
     socket.on('returnedAvatarData', (userData) => {
         let initData = true
@@ -179,11 +179,18 @@ io.on('connection', (socket) => {
         io.emit('usefulAvatarData', dataList);
     });
 
-    // start of chat room server side
+    // chat room server side
     socket.on('send-chat-message', message => {
         console.log(message)
         io.emit('chat-message', { message: message, from: socket.id})
     })
+    
+    // audio part
+    io.to(socket.id).emit('tellMeYourStream');
+    socket.on('myStreamis', stream => {
+        io.emit('newStreamTag', stream)
+    })
+    
     // end of chat room server side
 });
 
