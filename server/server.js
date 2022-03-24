@@ -4,18 +4,23 @@ var cors = require('cors');
 const app = express();
 app.use(cors())
 const http = require('http');
-const server = http.createServer(app);
-const io = require('socket.io')(server, {
+const HTTPserver = http.createServer(app);
+const io = require('socket.io')(HTTPserver, {
     cors: {
         origin : "*",
     },
 })
 // for register usage
 const bodyParser = require('body-parser')
+const bcrypt = require('bcrypt')
+const cookieParser = require('cookie-parser');
+const { ExpressPeerServer } = require("peer");
+const peerServer = ExpressPeerServer(HTTPserver, {
+    debug: true,
+});
 const mongoose = require('mongoose')
 const User = require('../model/user')
-const bcrypt = require('bcrypt')
-mongoose.connect('mongodb://localhost:27017/local-api-register', {
+mongoose.connect('mongodb+srv://jasonwoo665:jackyxd0211@local-api-register.jcjb1.mongodb.net/local-api-register?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
@@ -24,45 +29,80 @@ const jwt = require('jsonwebtoken')
 const JWT_SECRET = '32pvutywoh#cgiwao(&%^$U#Y@;qrfhoq3pfo72 39fj,gp90tu004yb445jdqadpso||alsavmvkljoetw[qpavmknhug'
 
 // for socket io identification
-let clientList = [] 
-let dataList = []
-const users = {} // just for chat room server side, may merge with clientList later for simplicity
+let clientList = []                 //e.g. [ socketid1, socketid2,...]
+let dataList = []                   //e.g. [ {{data: ...}, {aspect: ...}}, {{data: ...}, {aspect: ...}} ,...]
+// self defined data to link user name and socket id
+var name_id_list_server = []        //e.g. [{name: "henry", socketid: "12345"},...]
+// specialzied for peerjs
+let roomSocketList = {}   // e.g. 
+                          // { 
+                          //   roomid1:   [ { peerid: 123, socketid: 987, name: 'john' }, { peerid: 321, socketid: 876, name: 'david' } ],
+                          //   roomid2:   [ { peerid: 456, socketid: 789, name: 'dead' }, { peerid: 654, socketid: 678, name: 'henry' } ] 
+                          // }
 
+// peerjs video call
+app.use("/peerjs", peerServer);
 // for register usage
 app.use(bodyParser.json());
+app.use(cookieParser());
 // set paths
 app.use("/src", express.static('../src/'));
 app.use("/indexScript", express.static('../indexScript/'));
 app.use("/locateFile", express.static('../locateFile/'));
 app.use("/assets", express.static('../assets/'));
 app.use("/userMain", express.static('../'));
+app.use("/posts", express.static('../'));
 // set view engine to pug
 app.set("view engine", "pug")
 app.set("views", "../")
 
 let JWTidList = []
 
-app.post('/api/userMain', (req, res)=>{
+app.post('/api/createCookie', (req, res)=>{
     let username = req.body.username;
     let id = req.body.customID;
-
-    return res.json({status: 'ok', id: id, username: username})
+    res.cookie('username', username, {httpOnly: true})
+    res.cookie('id', id, {httpOnly: true})
+    return res.json({status: 'ok'})
 })
 
-app.get('/userMain/:id', (req, res) => {
+// app.get('/readcookies', (req, res)=>{
+//     const cookies = req.cookies;
+//     console.log(cookies)
+//     res.json(cookies)
+// })
+
+app.get('/userMain/:topic', (req, res) => {
     // res.sendFile('simple.html', { root: '../' })
-    for (IDloop in JWTidList){
-        if (JWTidList[IDloop].id == req.params.id){
-            res.render('index',{ title: 'Chat room ', username: JWTidList[IDloop].username})
-        }
-    }
+    const cookies = req.cookies;
+    let username = cookies.username
+    let id = cookies.id
+    res.render('index',{ title: req.params.topic+' discussion room ', username: username, ROOM_ID: req.params.topic})
 });
 
 app.get('/register', (req, res) => {
     res.render('register',{ loginUrl: 'login'})
 });
 app.get('/login', (req, res) => {
-    res.render('login',{ registerUrl: 'register', mainAPIUrl: '/api/userMain', mainUrl: 'userMain'})
+    res.render('login',{ registerUrl: 'register', mainAPIUrl: '/api/createCookie', mainUrl: 'forums'})
+});
+app.get('/forums', (req, res) => {
+    const cookies = req.cookies;
+    let username = cookies.username
+    let id = cookies.id
+    res.render('forums',{ username: username})
+});
+app.get('/posts/:category', (req, res) => {
+    const cookies = req.cookies;
+    let username = cookies.username
+    let id = cookies.id
+    res.render('posts',{ username: username})
+});
+app.get('/setting', (req, res) => {
+    const cookies = req.cookies;
+    let username = cookies.username
+    let id = cookies.id
+    res.render('setting',{ username: username})
 });
 
 
@@ -79,10 +119,6 @@ app.post('/api/login', async (req, res)=>{
             id: user._id, 
             username: user.username
         }, JWT_SECRET)
-        JWTidList.push({
-            id: user._id,
-            username: username
-        });
         return res.json({status: 'ok', data: token, username: user.username})
     }
     res.json({status: 'error', error: 'Invalid username/password'})
@@ -109,10 +145,8 @@ app.post('/api/register', async (req, res)=>{
 
 })
 
-// self defined data to link user name and socket id
-var name_id_list_server = [] //e.g. [{name: "henry", socketid: "12345"},...]
-
 io.on('connection', (socket) => {
+    // socket.on("join-room", (roomId, userId, userName) => {
     // get the name of user
     io.to(socket.id).emit('tellMeYourName');
     socket.on('myNameis', (username)=>{
@@ -120,7 +154,7 @@ io.on('connection', (socket) => {
             name: username,
             socketid: socket.id
         })
-        console.log('server name list:', name_id_list_server)
+        console.log('socket server name list:', name_id_list_server)
         // broadcast it
         io.emit('newNameList', name_id_list_server);
     })
@@ -150,7 +184,7 @@ io.on('connection', (socket) => {
                 name_id_list_server.splice(i, 1);
             }
         }
-        console.log('server name list:', name_id_list_server)
+        console.log('socket server name list:', name_id_list_server)
         // tell everyone the user left
         socket.broadcast.emit('newNameList', name_id_list_server);
         socket.broadcast.emit('someoneDisconnect', clientList);
@@ -184,17 +218,59 @@ io.on('connection', (socket) => {
         console.log(message)
         io.emit('chat-message', { message: message, from: socket.id})
     })
+
+    // peerjs video call stuff
+    socket.on("join-room", (roomId, userId, userName) => {
+        console.log(`joined room: ${roomId}, ${userId}, ${userName}`)
+        socket.join(roomId);
+        io.to(roomId).emit("user-connected", userId, socket.id);
     
-    // audio part
-    io.to(socket.id).emit('tellMeYourStream');
-    socket.on('myStreamis', stream => {
-        io.emit('newStreamTag', stream)
+        // room states
+        if (roomSocketList[roomId]==undefined){
+          roomSocketList[roomId] = [{ peerid: userId, socketid: socket.id, name: userName }]
+        }
+        else{
+          roomSocketList[roomId].push({ peerid: userId, socketid: socket.id, name: userName })
+        }
+    
+        console.log('peer object list:', roomSocketList)
+    
+        socket.on("message", (message) => {
+          io.to(roomId).emit("createMessage", message, userName);
+        });
+    });
+    socket.on('connection-request', (roomID, userID)=>{
+        io.to(roomID).emit("user-connected", userID);
     })
-    
-    // end of chat room server side
+    socket.on("disconnecting", (reason)=>{
+        // socket.rooms structure: { socketid: socketid, roomid: roomid} , defined by socketio
+        let roomID, peerID
+        // var it= socket.rooms.values
+        // peerID = it.next();
+        for (let x of socket.rooms){
+          if (x!=socket.id) roomID=x
+        }
+        // remove the user form list, also remove the room if no user left in the room
+        if (roomSocketList[roomID]!=undefined){
+          for (user in roomSocketList[roomID]){
+            if (roomSocketList[roomID][user].socketid == socket.id){
+              peerID = roomSocketList[roomID][user].peerid
+              delete roomSocketList[roomID][user]
+            }
+            // empty items instead of really removing
+            // if (roomSocketList[roomID].length == 0){
+            //   delete roomSocketList[roomID]
+            // }
+          }
+        }
+        console.log('someone left 88')
+        console.log(roomSocketList)
+        // tell all user the new roomSocketList[roomID], peerID (of the disconencted person)
+        io.to(roomID).emit("user-disconnected",roomSocketList[roomID], peerID)
+    })
 });
 
-server.listen(3000, () => {
+HTTPserver.listen(3000, () => {
     console.log('listening on *:3000');
 });
   

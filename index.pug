@@ -1,6 +1,5 @@
 doctype html
 head
-    // rendered by pug
     meta(charset='UTF-8')
     title Live2D merge facemesh Simple
     meta(name='viewport' content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=4.0')
@@ -10,14 +9,50 @@ head
     script(src='./indexScript/drawing_utils.js' crossorigin='anonymous')
     script(src='./indexScript/face_mesh.js' crossorigin='anonymous')
     // streaming
+    //- script(src='./socket.io/socket.io.js')
     script(src='https://cdn.socket.io/4.4.1/socket.io.min.js' integrity='sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H' crossorigin='anonymous')
+    script(src='https://kit.fontawesome.com/c939d0e917.js')
+    script(src='https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js')
+    
     style 
+        include ./styles/style-video-call.css
         include ./styles/style.css
 
 h1= title
 h1= "you are "+username
 script.
     username = "#{username}"
+    ROOM_ID = "#{ROOM_ID}"
+.videocalls
+    .header
+    .logo
+        .header__back
+        i.fas.fa-angle-left
+        h3
+        | Video Chat
+    .main
+    .main__left
+        .videos__group
+        #video-grid
+        .options
+        .options__left
+            #stopVideo.options__button
+            i.fa.fa-video-camera
+            #muteButton.options__button
+            i.fa.fa-microphone
+            #showChat.options__button
+            i.fa.fa-comment
+        .options__right
+            #inviteButton.options__button
+            i.fas.fa-user-plus
+    .main__right
+        .main__chat_window
+        .messages
+        .main__message_container
+        input#chat_message(type='text' autocomplete='off' placeholder='Type message here...')
+        #send.options__button
+            i.fa.fa-plus(aria-hidden='true')
+            
 .content-wrap
     // left side bar
     .main-menu
@@ -54,8 +89,8 @@ script.
                     | Click here for more info
     .control-panel
 
-#audiowrap
-button#audio= 'speaking'
+
+
 
 // Live2D Library
 script(src='src/live2d.min.js')

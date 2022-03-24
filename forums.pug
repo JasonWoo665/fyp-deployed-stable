@@ -1,0 +1,157 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Forum
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+  link(rel='preconnect' href='https://fonts.gstatic.com')
+  link(href='https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap' rel='stylesheet')
+  style 
+    include ./styles/style-forum.css
+header
+  // NavBar Section
+  .navbar
+    nav#navigation.navigation.hide
+      span#close-icon.close-icon(onclick='showIconBar()')
+        i.fa.fa-close
+      ul.nav-list
+        li.nav-item
+          a(href='forums.html') Forums
+        li.nav-item
+          a(href='posts.html') Posts
+        li.nav-item
+          a(href='setting.html') Setting
+    a#iconBar.bar-icon(onclick='hideIconBar()')
+      i.fa.fa-bars
+    .brand Stargazers
+    .loginName= "Welcome "+username+"!"
+
+  // SearchBox Section
+  .search-box
+    div
+      select(name='' id='')
+        option(value='Everything') Heated News
+        option(value='Titles') Education
+        option(value='Descriptions') Films and movies
+      input(type='text' name='q' placeholder='search ...')
+      button
+        i.fa.fa-search
+.container
+  .subforum
+    .subforum-title
+      h1 Heated News
+    .subforum-row
+      .subforum-icon.subforum-column.center
+        i.fa.fa-fire
+      .subforum-description.subforum-column
+        h4
+          a(href='#') COVID-19 Updated News
+        p
+          | Description Content: Let&apos;s put the updated news here as a summary of current situation.
+      .subforum-stats.subforum-column.center
+        span 
+          | 1 Posts 
+          br
+          | 1 Topics
+      .subforum-info.subforum-column
+        b
+          a(href='') Last post
+        |  by 
+        a(href='') Tommy
+        br
+        | on 
+        small 8 Mar 2022
+  // More
+  .subforum
+    .subforum-title
+      h1 Education
+    .subforum-row
+      .subforum-icon.subforum-column.center
+        i.fa.fa-fire
+      .subforum-description.subforum-column
+        h4
+          a(href='#') 10 Best Educational YouTube channel
+        p Description Content: Let&apos;s find out which are the best educational yt channel.
+      .subforum-stats.subforum-column.center
+        span 
+          | 1 Posts 
+          br
+          | 1 Topics
+      .subforum-info.subforum-column
+        b
+          a(href='') Last post
+        |  by 
+        a(href='') Tommy
+        br
+        | on 
+        small 8 Mar 2022
+  .subforum
+    .subforum-title
+      h1 Films and movies
+    .subforum-row
+      .subforum-icon.subforum-column.center
+        i.fa.fa-fire
+      .subforum-description.subforum-column
+        h4
+          a(href='#') Hello World
+        p Description Content: Testing of the forum.
+      .subforum-stats.subforum-column.center
+        span 
+          | 1 Posts 
+          br
+          | 1 Topics
+      .subforum-info.subforum-column
+        b
+          a(href='') Last post
+        |  by 
+        a(href='') Tommy
+        br
+        | on 
+        small Mar 8 2022
+  // 
+// Forum Info
+.forum-info
+  .chart
+    | Stargazers - Stats &nbsp;
+    i.fa.fa-bar-chart
+  span
+    u 1
+    |  Posts in 
+    u 1
+    |  Topics by 
+    u 1
+    |  Members.
+  br
+  span
+    | Latest post: 
+    b
+      a(href='') Testing
+    |  on Mar 8 2022 By 
+    a(href='') Tommy
+  | .
+  br
+  span
+    | Check 
+    a(href='') the latest posts
+    |  .
+  br
+footer
+  span
+script(type='text/javascript' src='src/forumStyleControl.js')
+script.
+  function init(){
+    const subforums = document.getElementsByClassName("subforum-description subforum-column");
+    let topic= subforums[0].firstChild.firstChild.innerText
+    Array.prototype.forEach.call(subforums, subforum=>{
+        let topic = subforum.firstChild.firstChild.innerText;
+        subforum.addEventListener("click",(e)=>{
+          location.href = '/userMain/'+topic
+        })
+    })
+  }
+  window.onload = function() {
+    init();
+  };
+  
+
+

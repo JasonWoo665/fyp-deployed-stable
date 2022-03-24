@@ -51,7 +51,8 @@ html(lang="en")
                         })
                     //- }).then((res) => location.href = mainUrl+JSON.parse(atob(result.data.split(".")[1])).id)
                     }).then((res)=>{
-                        location.href = mainUrl+'/'+ JSON.parse(atob(result.data.split(".")[1])).id
+                        //- location.href = mainUrl+'/'+ JSON.parse(atob(result.data.split(".")[1])).id+"&333"
+                        location.href = mainUrl
                     })
                 }
                 else{

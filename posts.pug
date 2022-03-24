@@ -1,0 +1,107 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Forum
+  link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+  link(rel='preconnect' href='https://fonts.gstatic.com')
+  link(href='https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap' rel='stylesheet')
+  style 
+    include ./styles/style-forum.css
+header
+  // NavBar Section
+  .navbar
+    nav#navigation.navigation.hide
+      span#close-icon.close-icon(onclick='showIconBar()')
+        i.fa.fa-close
+      ul.nav-list
+        li.nav-item
+          a(href='forums.html') Forums
+        li.nav-item
+          a(href='posts.html') Posts
+        li.nav-item
+          a(href='setting.html') Setting
+    a#iconBar.bar-icon(onclick='hideIconBar()')
+      i.fa.fa-bars
+    .brand Stargazers
+    .loginName= "Welcome "+username+"!"
+  // SearchBox Section
+  .search-box
+    div
+      select(name='' id='')
+        option(value='Everything') Heated News
+        option(value='Titles') Education
+        option(value='Descriptions') Films and movies
+      input(type='text' name='q' placeholder='search ...')
+      button
+        i.fa.fa-search
+.container
+  // Navigation
+  .navigate
+    span
+      a(href='') Stargazers - Forums
+      |  &gt;&gt; 
+      a(href='') Heated News
+  // Display posts table
+  .posts-table
+    .table-head
+      .status Status
+      .subjects Subjects
+      .replies Replies/Views
+      .last-reply Last Reply
+    .table-row
+      .status
+        i.fa.fa-fire
+      .subjects
+        a(href='') COVID-19 Updated News
+        br
+        span
+          | Started by 
+          b
+            a(href='') Tommy
+          |  .
+      .replies
+        | 1 replies 
+        br
+        |  10 views
+      .last-reply
+        | Mar 8 2022
+        br
+        | By 
+        b
+          a(href='') Tommy
+    .table-row
+      .status
+        i.fa.fa-fire
+      .subjects
+        a(href='') students no holiday ggwp
+        br
+        span
+          | Started by 
+          b
+            a(href='') Jason
+          |  .
+      .replies
+        | 3 replies 
+        br
+        |  30 views
+      .last-reply
+        | Mar 10 2022
+        br
+        | By 
+        b
+          a(href='') Jason
+    // starts here
+    // ends here
+  // Pagination starts
+  .pagination
+    | pages: 
+    a(href='') 1
+    a(href='') 2
+    a(href='') 3
+  // pagination ends
+.note
+footer
+  span
+script(type='text/javascript' src='src/forumStyleControl.js')
+
