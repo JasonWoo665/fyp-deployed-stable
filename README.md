@@ -4,5 +4,21 @@ This is my final year project in The University of Hong Kong as a computer scien
 It is a web application that allows people to do real time video communication, just like zooming. The difference is that the video is replaced by an avatar.
 
 ## Current progress
- - Audio of avatar and customization of avatar settings are to be implemented
- - styles of pages need to be implemented
+ - the function of changing avatars
+ - the function of uploading custom backgrounds 
+ - database saving the background images
+ - styles of pages
+
+
+## Future work
+ - better eyeball tracking A.I
+ - voice changer 
+
+## Credits
+[1. Tutorial for styling a forum page](https://www.youtube.com/watch?v=knGk9aUr4Do&t=198s)
+
+[2. Example of streaming through PeerJS ](https://github.com/itstaranarora/video-chat-v1)
+
+[3. Mediapip face recognition demo ](https://codepen.io/mediapipe/details/KKgVaPJ)
+
+[4. Example of Live2D technology in webpage](https://github.com/llminatoll/Live2D_SDK_WebGL_2.1)
