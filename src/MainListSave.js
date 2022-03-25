@@ -241,6 +241,7 @@ navigator.mediaDevices
         addVideoStream(video, userVideoStream);
         console.log("responsed to call and added stream")
       });
+      peers[call.peer] = call
     });
 
     socket.on("user-connected", (userId) => {
@@ -250,22 +251,23 @@ navigator.mediaDevices
       }
     });
     socket.emit('connection-request', ROOM_ID, mypeerID)
-    socket.on('user-disconnected', (myRoomSocketList, peerID) => {
+    socket.on('user-disconnected', (peerID) => {
       console.log("peer disconnect: ",peerID)
       if (peers[peerID]) peers[peerID].close()
+      Array.prototype.forEach.call(document.getElementsByClassName(peerID), delvidFrames=>{
+        delvidFrames.remove();
+        delete peers[peerID]
+      })      
     })
 
   });
 
 // sending our `stream` to the user with `userId`
 const connectToNewUser = (userId, stream) => {
-  console.log('calling', userId, 'with stream obj', stream)
   const call = peer.call(userId, stream);
-  console.log('proof of call: ',call)
   const video = document.createElement("video");
   video.className = userId
   call.on("stream", (userVideoStream) => {
-    console.log('really added video frame from',userId)
     addVideoStream(video, userVideoStream);
   });
   call.on('close', () => {
@@ -282,11 +284,17 @@ peer.on("open", (id) => {
 });
 
 const addVideoStream = (video, stream) => {
-  video.srcObject = stream;
-  video.addEventListener("loadedmetadata", () => {
-    video.play();
-    videoGrid.append(video);
-  });
+  console.log('adding vid with classname:',video.className)
+  if (document.getElementsByClassName(video.className).length==0){
+    video.srcObject = stream;
+    video.addEventListener("loadedmetadata", () => {
+      video.play();
+      videoGrid.append(video);
+    });
+    console.log('addvid with id:', video.className,'success')
+  }else{
+    console.log('duplicated class name:',video.className)
+  }
 };
 
 const inviteButton = document.querySelector("#inviteButton");

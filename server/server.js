@@ -266,7 +266,7 @@ io.on('connection', (socket) => {
         console.log('someone left 88')
         console.log(roomSocketList)
         // tell all user the new roomSocketList[roomID], peerID (of the disconencted person)
-        io.to(roomID).emit("user-disconnected",roomSocketList[roomID], peerID)
+        io.to(roomID).emit("user-disconnected", peerID)
     })
 });
 
