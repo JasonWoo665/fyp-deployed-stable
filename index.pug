@@ -23,35 +23,6 @@ h1= "you are "+username
 script.
     username = "#{username}"
     ROOM_ID = "#{ROOM_ID}"
-.videocalls
-    .header
-    .logo
-        .header__back
-        i.fas.fa-angle-left
-        h3
-        | Video Chat
-    .main
-    .main__left
-        .videos__group
-        #video-grid
-        .options
-        .options__left
-            #stopVideo.options__button
-            i.fa.fa-video-camera
-            #muteButton.options__button
-            i.fa.fa-microphone
-            #showChat.options__button
-            i.fa.fa-comment
-        .options__right
-            #inviteButton.options__button
-            i.fas.fa-user-plus
-    .main__right
-        .main__chat_window
-        .messages
-        .main__message_container
-        input#chat_message(type='text' autocomplete='off' placeholder='Type message here...')
-        #send.options__button
-            i.fa.fa-plus(aria-hidden='true')
             
 .content-wrap
     // left side bar
@@ -88,6 +59,11 @@ script.
                 a(href='https://solutions.mediapipe.dev/face_mesh')
                     | Click here for more info
     .control-panel
+
+.videocalls
+    #video-grid
+    #muteButton.options__button
+    #inviteButton.options__button
 
 
 

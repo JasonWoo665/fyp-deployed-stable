@@ -181,20 +181,20 @@ header{
 }
 
 @font-face {
-    font-family:aquire;
-    src:url('styles/aquire.otf') format('opentype');
+    font-family: 'aquire';
+    src:url('fonts/aquire.otf');
 }
 
 .brand{
     font-size:60px;
     display: inline-block;
-    font-family:aquire;
+    /* font-family:aquire; */
 }
 
 .loginName{
     font-size:30px;
     align-self: flex-end;
-    font-family:aquire;
+    /* font-family:aquire; */
     margin-left: auto;
 }
 

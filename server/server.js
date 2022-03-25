@@ -52,11 +52,10 @@ app.use("/locateFile", express.static('../locateFile/'));
 app.use("/assets", express.static('../assets/'));
 app.use("/userMain", express.static('../'));
 app.use("/posts", express.static('../'));
+app.use("/styles", express.static('../'));
 // set view engine to pug
 app.set("view engine", "pug")
 app.set("views", "../")
-
-let JWTidList = []
 
 app.post('/api/createCookie', (req, res)=>{
     let username = req.body.username;
@@ -104,7 +103,6 @@ app.get('/setting', (req, res) => {
     let id = cookies.id
     res.render('setting',{ username: username})
 });
-
 
 // handles login stuff
 app.post('/api/login', async (req, res)=>{
@@ -245,8 +243,6 @@ io.on('connection', (socket) => {
     socket.on("disconnecting", (reason)=>{
         // socket.rooms structure: { socketid: socketid, roomid: roomid} , defined by socketio
         let roomID, peerID
-        // var it= socket.rooms.values
-        // peerID = it.next();
         for (let x of socket.rooms){
           if (x!=socket.id) roomID=x
         }
@@ -257,13 +253,9 @@ io.on('connection', (socket) => {
               peerID = roomSocketList[roomID][user].peerid
               delete roomSocketList[roomID][user]
             }
-            // empty items instead of really removing
-            // if (roomSocketList[roomID].length == 0){
-            //   delete roomSocketList[roomID]
-            // }
           }
         }
-        console.log('someone left 88')
+        console.log('someone left')
         console.log(roomSocketList)
         // tell all user the new roomSocketList[roomID], peerID (of the disconencted person)
         io.to(roomID).emit("user-disconnected", peerID)
