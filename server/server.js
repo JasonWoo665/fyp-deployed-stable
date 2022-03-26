@@ -211,12 +211,6 @@ io.on('connection', (socket) => {
         io.to(roomId).emit('usefulAvatarData', roomDataListCollection[roomId]);
     });
 
-    // chat room server side
-    socket.on('send-chat-message', message => {
-        console.log(message)
-        io.emit('chat-message', { message: message, from: socket.id})
-    })
-
     // peerjs video call stuff
     socket.on("join-room", (roomId, userId, userName) => {
         console.log(`joined room: ${roomId}, ${userId}, ${userName}`)
@@ -233,9 +227,13 @@ io.on('connection', (socket) => {
     
         console.log('peer object list:', roomSocketList)
     
-        socket.on("message", (message) => {
-          io.to(roomId).emit("createMessage", message, userName);
-        });
+        // chat room server side
+        socket.on('send-chat-message', message => {
+            io.to(roomId).emit('chat-message', { message: message, from: socket.id})
+        })
+        // socket.on("message", (message) => {
+        //   io.to(roomId).emit("createMessage", message, userName);
+        // });
     });
     socket.on('connection-request', (roomID, userID)=>{
         io.to(roomID).emit("user-connected", userID, socket.id);
@@ -255,13 +253,7 @@ io.on('connection', (socket) => {
             }
           }
         }
-        // also remove from name socket list
-        // for (const i in name_id_list_server){
-        //     if (name_id_list_server[i].socketid==socket.id){
-        //         name_id_list_server.splice(i, 1);
-        //     }
-        // }
-        // tell everyone the new namelist
+        // name_id_list_server handled in disconenct part for roomid issues
         // tell all user the new roomSocketList[roomID], peerID (of the disconencted person)
         io.to(roomID).emit("user-disconnected", peerID)
     })
