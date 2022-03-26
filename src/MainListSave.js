@@ -53,81 +53,90 @@ function newCanvas(socketID) {
   canvas[0][socketID].width = canvas[0][socketID].height = CAN_SIZE;
   // Live2D生成
   chara[0][socketID] = new Simple(canvas[0][socketID], ele.id, socketID);
-  console.log(chara[0]);
+  // console.log(chara[0]);
+}
+
+// a compare array function usedto maintain server name id list and local name id list
+function compareArraysWithAttribute(name_id_list, name_id_list_server, name, socketid){
+  const isSameUser = (name_id_list, name_id_list_server) => name_id_list[name] == name_id_list_server[name] && name_id_list[socketid] == name_id_list_server[socketid];
+  // Get items that only occur in the left array,
+  // using the compareFunction to determine equality.
+  const onlyInLeft = (left, right, compareFunction) => 
+  left.filter(leftValue =>
+    !right.some(rightValue => 
+      compareFunction(leftValue, rightValue)));
+  const onlyInA = onlyInLeft(name_id_list, name_id_list_server, isSameUser);
+  const onlyInB = onlyInLeft(name_id_list_server, name_id_list, isSameUser);
+  const result = [...onlyInA, ...onlyInB];
+  return(result);
 }
 
 // streaming stuff - client side
-let localClientList = []; // temp of list of id of connected sockets
 let localDataList = []; // list of avatar data
-let localDisplayAvatars = []; // list of id of connected sockets
+let handShakeComplete = false; // only until registered name in both client and server, start gathering avatar data
 let selfBackgroundImageCanvas = "https://wallpapercave.com/dwp2x/wp4785026.jpg";
 // data ready to broadcast for rendering
 // renderDataObj: headZ, headY, headX, leftEyeOpenRatio, rightEyeOpenRatio, eyeDirX, eyeDirY, mouthOpen, mouthForm
 // update the client list on conenct and disconnect
 socket.on("tellMeYourName", () => {
   console.log("telling name as " + username);
-  socket.emit("myNameis", username);
+  socket.emit("myNameis", username, ROOM_ID);
 });
-socket.on("newNameList", (name_id_list_server) => {
-  name_id_list = name_id_list_server;
-  // add the user name to the div tag
-  for (const usernamei in name_id_list) {
-    let divtag = document.getElementById(
-      "namediv-" + "glcanvas" + name_id_list[usernamei].socketid
-    );
-    divtag.textContent = name_id_list[usernamei].name;
-  }
-  console.log("updated name list: ", name_id_list);
-});
-
 // handle new connections and disconnections
-socket.on("newConnect", (clientList) => {
-  localClientList = clientList;
-  console.log("received " + localClientList);
-  console.log(socket.id);
+socket.on('newSocketConnect', name_id_list_server=>{
+  console.log('received new socket connect list:', name_id_list_server)
   // render all other avatars not in display
-  let difference = localDisplayAvatars
-    .filter((x) => !localClientList.includes(x))
-    .concat(localClientList.filter((x) => !localDisplayAvatars.includes(x)));
+  let difference = compareArraysWithAttribute(name_id_list,name_id_list_server, "name","socketid")
+  console.log('detected diff in name id list: ',difference)
   for (const missingAvatar in difference) {
-    localDisplayAvatars.push(difference[missingAvatar]);
-    newCanvas(difference[missingAvatar].toString());
+    name_id_list.push(difference[missingAvatar]);
+    console.log('concat newcanvas: ',difference[missingAvatar].socketid.toString())
+    newCanvas(difference[missingAvatar].socketid.toString());     // add missing avatars to window
+    let divtag = document.getElementById(
+      "namediv-" + "glcanvas" + difference[missingAvatar].socketid      // add missing names to corresponding divs
+    );
+    divtag.textContent = difference[missingAvatar].name;
+    handShakeComplete = true; // set to true for first time connector only
   }
-});
-socket.on("someoneDisconnect", (clientList) => {
-  localClientList = clientList;
+  console.log('altered name id list: ',name_id_list)
+})
+socket.on('socketDisconnected', name_id_list_server=>{
+  console.log('received del socket connect list:', name_id_list_server)
   // remove extra avatars
-  let difference = localDisplayAvatars
-    .filter((x) => !localClientList.includes(x))
-    .concat(localClientList.filter((x) => !localDisplayAvatars.includes(x)));
+  let difference = compareArraysWithAttribute(name_id_list,name_id_list_server, "name","socketid")
   for (const extraAvatar in difference) {
     console.log(difference[extraAvatar]);
-    localDisplayAvatars.splice(
-      localDisplayAvatars.indexOf(difference[extraAvatar]),
+    name_id_list.splice(
+      name_id_list.indexOf(difference[extraAvatar]),
       1
     );
     canvas_del(
-      "glcanvas" + difference[extraAvatar],
-      "delbtn" + difference[extraAvatar],
-      difference[extraAvatar]
+      "glcanvas" + difference[extraAvatar].socketid,
+      "delbtn" + difference[extraAvatar].socketid,
+      difference[extraAvatar].socketid
     );
   }
-});
+  console.log('canvas diff: ',difference)
+})
+
 // send out self-avatar data on server request
 socket.on("gatherAvatarData", () => {
   if (renderDataObj.data.headZ != undefined) {
     //check if data initialzied or not
     renderDataObj.aspect.socketOwner = socket.id;
     renderDataObj.aspect.background = selfBackgroundImageCanvas; // also provide background info
-    socket.emit("returnedAvatarData", renderDataObj);
+    socket.emit("returnedAvatarData", renderDataObj, ROOM_ID);
   }
 });
 // get manipulated datalist back from server for rendering
 socket.on("usefulAvatarData", (dataList) => {
-  localDataList = dataList;
-  for (const count in dataList) {
-    chara[0][dataList[count].aspect.socketOwner].renderDataObj =
-      dataList[count];
+  // console.log('received data: ',dataList)
+  if (handShakeComplete){
+    localDataList = dataList;
+    for (const count in dataList) {
+      chara[0][dataList[count].aspect.socketOwner].renderDataObj =
+        dataList[count];
+    }
   }
 });
 
@@ -241,7 +250,7 @@ navigator.mediaDevices
       Array.prototype.forEach.call(document.getElementsByClassName(peerID), delvidFrames=>{
         delvidFrames.remove();
         delete peers[peerID]
-      })      
+      })
     })
 
   });

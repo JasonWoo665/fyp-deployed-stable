@@ -29,16 +29,17 @@ const jwt = require('jsonwebtoken')
 const JWT_SECRET = '32pvutywoh#cgiwao(&%^$U#Y@;qrfhoq3pfo72 39fj,gp90tu004yb445jdqadpso||alsavmvkljoetw[qpavmknhug'
 
 // for socket io identification
-let clientList = []                 //e.g. [ socketid1, socketid2,...]
-let dataList = []                   //e.g. [ {{data: ...}, {aspect: ...}}, {{data: ...}, {aspect: ...}} ,...]
+let roomDataListCollection = {}     // a wrapper of dataList in different rooms
+                                    //e.g  {'room1': 'dataList', 'room2': 'dataList1', 'room3': 'dataList2'}
+// let dataList = []                   //e.g. [ {{data: ...}, {aspect: ...}}, {{data: ...}, {aspect: ...}} ,...]
 // self defined data to link user name and socket id
 var name_id_list_server = []        //e.g. [{name: "henry", socketid: "12345"},...]
 // specialzied for peerjs
-let roomSocketList = {}   // e.g. 
-                          // { 
-                          //   roomid1:   [ { peerid: 123, socketid: 987, name: 'john' }, { peerid: 321, socketid: 876, name: 'david' } ],
-                          //   roomid2:   [ { peerid: 456, socketid: 789, name: 'dead' }, { peerid: 654, socketid: 678, name: 'henry' } ] 
-                          // }
+let roomSocketList = {}             // e.g. 
+                                    // { 
+                                    //   roomid1:   [ { peerid: 123, socketid: 987, name: 'john' }, { peerid: 321, socketid: 876, name: 'david' } ],
+                                    //   roomid2:   [ { peerid: 456, socketid: 789, name: 'dead' }, { peerid: 654, socketid: 678, name: 'henry' } ] 
+                                    // }
 
 // peerjs video call
 app.use("/peerjs", peerServer);
@@ -144,71 +145,70 @@ app.post('/api/register', async (req, res)=>{
 })
 
 io.on('connection', (socket) => {
-    // socket.on("join-room", (roomId, userId, userName) => {
     // get the name of user
     io.to(socket.id).emit('tellMeYourName');
-    socket.on('myNameis', (username)=>{
+    socket.on('myNameis', (username, roomId)=>{
+        socket.join(roomId);
         name_id_list_server.push({
             name: username,
-            socketid: socket.id
+            socketid: socket.id,
+            roomId: roomId
         })
-        console.log('socket server name list:', name_id_list_server)
-        // broadcast it
-        io.emit('newNameList', name_id_list_server);
+        // amend the name_id_list_server to suit the room before sending to the room
+        room_suit_name_id_list_server = name_id_list_server.filter(user => user.roomId==roomId);
+        io.to(roomId).emit('newSocketConnect', room_suit_name_id_list_server);
+        console.log('>>> ['+socket.id+'] connected ---> name_id_list_server: ',name_id_list_server)
+        console.log(`acutal name_id_list_server to room ${roomId}: `,room_suit_name_id_list_server)
     })
-    // update the user list when new user connects
-    if (!clientList.includes(socket.id)){
-        clientList.push(socket.id)
-        io.emit('newConnect', clientList);
-        console.log('<<<>>> broadcasted:'+clientList)
-    }
-    console.log('>>> ['+socket.id+'] connected ---> '+clientList)
-
-    // handle socket disconnect case
     socket.on("disconnect", (reason) => {
-        // remove the user from clientList and dataList
-        if (clientList.includes(socket.id)){
-            clientList.splice(clientList.indexOf(socket.id), 1);
-            // also remove it from dataList
-            for (const count in dataList){
-                if (dataList[count].aspect.socketOwner == socket.id){
-                    dataList.splice(count, 1);
-                }
-            }
-        }
-        // also remove it from name list
+        let roomId;
+        // remove it from name list
         for (const i in name_id_list_server){
             if (name_id_list_server[i].socketid==socket.id){
+                roomId = name_id_list_server[i].roomId  // identify the room id for further work
                 name_id_list_server.splice(i, 1);
             }
         }
-        console.log('socket server name list:', name_id_list_server)
-        // tell everyone the user left
-        socket.broadcast.emit('newNameList', name_id_list_server);
-        socket.broadcast.emit('someoneDisconnect', clientList);
-        console.log('<<< ['+socket.id+'] diconnect ---> '+clientList)
-    });
+        // remove the user from dataList
+        if (roomDataListCollection[roomId]!=undefined){
+            for (count in roomDataListCollection[roomId]){
+                if (roomDataListCollection[roomId][count].aspect.socketOwner == socket.id){
+                    roomDataListCollection[roomId].splice(count, 1);
+                }
+            }
+        }
+        console.log('roomDataListCollection after disconnection:', roomDataListCollection)
+        // amend the name_id_list_server to suit the room before sending to the room
+        room_suit_name_id_list_server = name_id_list_server.filter(user => user.roomId==roomId);
+        io.to(roomId).emit('socketDisconnected', room_suit_name_id_list_server);
+        console.log('<<< ['+socket.id+'] diconnect ---> name_id_list_server: ',name_id_list_server)
+    })
+
     // exchange avatar data
     setInterval(() => {
         io.emit('gatherAvatarData');
     }, 10);
     // manipulate asynchronous data reuturned from clients
-    socket.on('returnedAvatarData', (userData) => {
-        let initData = true
+    socket.on('returnedAvatarData', (userData, roomId) => {
+        // if a room never have any connections, init the room's datalist
+        if (roomDataListCollection[roomId]==undefined || roomDataListCollection[roomId].length == 0){
+            roomDataListCollection[roomId]=[]
+        }
+        let initData = true     // true if a user is never added to the room's datalist
         // overwrite data respectively
-        for (const serverData in dataList) {
-            if (userData.aspect.socketOwner == dataList[serverData].aspect.socketOwner){
-                dataList[serverData] = userData
+        for (const serverData in roomDataListCollection[roomId]) {
+            if (userData.aspect.socketOwner == roomDataListCollection[roomId][serverData].aspect.socketOwner){
+                roomDataListCollection[roomId][serverData] = userData
                 initData = false
             }
         }
-        // remove the data if the user is no longer in the chatrm
-
         // in case the data is not initialized
         if (initData){
-            dataList.push(userData)
+            roomDataListCollection[roomId].push(userData)
         }
-        io.emit('usefulAvatarData', dataList);
+        // console.log("roomDataListCollection:", roomDataListCollection)
+        // console.log("sent out avatar:", roomDataListCollection[roomId])
+        io.to(roomId).emit('usefulAvatarData', roomDataListCollection[roomId]);
     });
 
     // chat room server side
@@ -221,7 +221,7 @@ io.on('connection', (socket) => {
     socket.on("join-room", (roomId, userId, userName) => {
         console.log(`joined room: ${roomId}, ${userId}, ${userName}`)
         socket.join(roomId);
-        io.to(roomId).emit("user-connected", userId, socket.id);
+        io.to(roomId).emit("user-connected", userId);
     
         // room states
         if (roomSocketList[roomId]==undefined){
@@ -238,7 +238,7 @@ io.on('connection', (socket) => {
         });
     });
     socket.on('connection-request', (roomID, userID)=>{
-        io.to(roomID).emit("user-connected", userID);
+        io.to(roomID).emit("user-connected", userID, socket.id);
     })
     socket.on("disconnecting", (reason)=>{
         // socket.rooms structure: { socketid: socketid, roomid: roomid} , defined by socketio
@@ -255,8 +255,13 @@ io.on('connection', (socket) => {
             }
           }
         }
-        console.log('someone left')
-        console.log(roomSocketList)
+        // also remove from name socket list
+        // for (const i in name_id_list_server){
+        //     if (name_id_list_server[i].socketid==socket.id){
+        //         name_id_list_server.splice(i, 1);
+        //     }
+        // }
+        // tell everyone the new namelist
         // tell all user the new roomSocketList[roomID], peerID (of the disconencted person)
         io.to(roomID).emit("user-disconnected", peerID)
     })
