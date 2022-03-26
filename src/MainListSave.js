@@ -2,7 +2,8 @@
 var chara = [{}];
 var canvas = [{}];
 var i = 0;
-var CAN_SIZE = 340;
+var CAN_SIZE = 1020;
+// var CAN_SIZE = 340;
 
 // self defined data to link user name and socket id
 var name_id_list = []; //e.g. [{name: "henry", socketid: "12345"},...]
@@ -38,8 +39,11 @@ function newCanvas(socketID) {
   let namediv = document.createElement("div");
   namediv.id = "namediv-" + "glcanvas" + socketID;
   // set the user name according to username-socketid list
-  document.getElementById("can").appendChild(namediv); //name of the avatar
-  document.getElementById("can").appendChild(ele);
+  let userArea = document.createElement('div');
+  userArea.className = 'userArea-'+socketID
+  userArea.appendChild(ele);
+  userArea.appendChild(namediv); //name of the avatar
+  document.getElementById("can").appendChild(userArea)
   // 削除ボタン
   // var delbtn = document.createElement('button');
   // delbtn.id = "delbtn" + socketID;
@@ -53,7 +57,9 @@ function newCanvas(socketID) {
   canvas[0][socketID].width = canvas[0][socketID].height = CAN_SIZE;
   // Live2D生成
   chara[0][socketID] = new Simple(canvas[0][socketID], ele.id, socketID);
-  // console.log(chara[0]);
+  for (let sockets in chara[0]){
+    console.log(chara[0][sockets].canvasId);
+  }
 }
 
 // a compare array function usedto maintain server name id list and local name id list
@@ -69,6 +75,25 @@ function compareArraysWithAttribute(name_id_list, name_id_list_server, name, soc
   const onlyInB = onlyInLeft(name_id_list_server, name_id_list, isSameUser);
   const result = [...onlyInA, ...onlyInB];
   return(result);
+}
+
+// adjust canvas size according to number of participants
+function adjustmonitor(pptNo){
+  let setWidth;
+  let setHeight;
+  if (pptNo == 2){
+    setWidth= 384;
+    setHeight= 512;
+  }
+  if (pptNo >= 3){
+    setWidth= 270;
+    setHeight= 360;
+  }
+  for (let sockets in chara[0]){
+    let tempCanvasID = chara[0][sockets].canvasId
+    document.getElementById(tempCanvasID).style.width = setWidth+'px';
+    document.getElementById(tempCanvasID).style.height = setHeight+'px';
+  }
 }
 
 // streaming stuff - client side
@@ -98,6 +123,7 @@ socket.on('newSocketConnect', name_id_list_server=>{
     divtag.textContent = difference[missingAvatar].name;
     handShakeComplete = true; // set to true for first time connector only
   }
+  adjustmonitor(name_id_list.length)
   console.log('altered name id list: ',name_id_list)
 })
 socket.on('socketDisconnected', name_id_list_server=>{
@@ -116,6 +142,7 @@ socket.on('socketDisconnected', name_id_list_server=>{
       difference[extraAvatar].socketid
     );
   }
+  adjustmonitor(name_id_list.length)
   console.log('canvas diff: ',difference)
 })
 
@@ -150,6 +177,7 @@ function sendMessageHandler(message) {
   if (message.charAt(message.length - 1) == "\n") {
     message = message.substring(0, message.length - 1);
   }
+  if(message.length!=0)
   socket.emit("send-chat-message", message);
 }
 msgBox.addEventListener("keyup", function (event) {
@@ -187,18 +215,18 @@ socket.on("chat-message", (message_from) => {
 });
 
 // background setting stuff
-let setBackground = document.getElementById("setBackground");
-setBackground.addEventListener("keyup", function (event) {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    let message = setBackground.value;
-    if (message.charAt(message.length - 1) == "\n") {
-      message = message.substring(0, message.length - 1);
-    }
-    selfBackgroundImageCanvas = message;
-    setBackground.value = "";
-  }
-});
+// let setBackground = document.getElementById("setBackground");
+// setBackground.addEventListener("keyup", function (event) {
+//   if (event.key === "Enter") {
+//     event.preventDefault();
+//     let message = setBackground.value;
+//     if (message.charAt(message.length - 1) == "\n") {
+//       message = message.substring(0, message.length - 1);
+//     }
+//     selfBackgroundImageCanvas = message;
+//     setBackground.value = "";
+//   }
+// });
 
 
 // peer js audio part

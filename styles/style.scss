@@ -82,11 +82,17 @@ h1{
   background: #8ac4f0;
     @include inline-wrap();
     justify-content: space-between;
+    flex-wrap: wrap;
+    -webkit-flex-wrap: wrap;
 }
 
 #can{
   @include verticle-wrap;
-  flex-direction: column-reverse;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 800px;
   .user-name{
     margin: 5px;
     text-align: center;
@@ -94,7 +100,9 @@ h1{
   canvas{
     border-style: double;
     border-width: 5px;
-    border-color: white  
+    border-color: white;
+    background-image: url('https://wallpapercave.com/dwp2x/wp4785026.jpg');
+    background-size: cover;
   }
 }
 
@@ -161,10 +169,4 @@ h1{
         }
       }
     }
-}
-#can{
-  canvas{
-    background-image: url('https://wallpapercave.com/dwp2x/wp4785026.jpg');
-    background-size: cover;
-  }
 }
