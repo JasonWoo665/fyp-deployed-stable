@@ -28,6 +28,10 @@ mongoose.connect('mongodb+srv://jasonwoo665:jackyxd0211@local-api-register.jcjb1
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = '32pvutywoh#cgiwao(&%^$U#Y@;qrfhoq3pfo72 39fj,gp90tu004yb445jdqadpso||alsavmvkljoetw[qpavmknhug'
 
+// background file upload usage
+const upload = require('express-fileupload')
+const fs = require('fs');
+
 // for socket io identification
 let roomDataListCollection = {}     // a wrapper of dataList in different rooms
                                     //e.g  {'room1': 'dataList', 'room2': 'dataList1', 'room3': 'dataList2'}
@@ -46,6 +50,8 @@ app.use("/peerjs", peerServer);
 // for register usage
 app.use(bodyParser.json());
 app.use(cookieParser());
+// background file upload usage
+app.use(upload())
 // set paths
 app.use("/src", express.static('../src/'));
 app.use("/indexScript", express.static('../indexScript/'));
@@ -57,6 +63,13 @@ app.use("/styles", express.static('../'));
 // set view engine to pug
 app.set("view engine", "pug")
 app.set("views", "../")
+
+// extract filen name without its type
+function removeType(filenameWithType){
+    let temparr = filenameWithType.split('.')
+    temparr.pop()
+    return temparr.join('.')
+}
 
 app.post('/api/createCookie', (req, res)=>{
     let username = req.body.username;
@@ -77,6 +90,7 @@ app.get('/userMain/:topic', (req, res) => {
     const cookies = req.cookies;
     let username = cookies.username
     let id = cookies.id
+    if (username === undefined) username='but please login first'
     res.render('index',{ title: req.params.topic+' discussion room ', username: username, ROOM_ID: req.params.topic})
 });
 
@@ -90,18 +104,21 @@ app.get('/forums', (req, res) => {
     const cookies = req.cookies;
     let username = cookies.username
     let id = cookies.id
+    if (username === undefined) username='but please login first'
     res.render('forums',{ username: username})
 });
 app.get('/posts/:category', (req, res) => {
     const cookies = req.cookies;
     let username = cookies.username
     let id = cookies.id
+    if (username === undefined) username='but please login first'
     res.render('posts',{ username: username})
 });
 app.get('/setting', (req, res) => {
     const cookies = req.cookies;
     let username = cookies.username
     let id = cookies.id
+    if (username === undefined) username='but please login first'
     res.render('setting',{ username: username})
 });
 
@@ -141,9 +158,50 @@ app.post('/api/register', async (req, res)=>{
         }
         throw error
     }
-
 })
 
+// handles file upload (for avatar background)
+app.post('/', (req, res)=>{
+    const cookies = req.cookies;
+    let username = cookies.username
+    let id = cookies.id
+    if (id===undefined || username===undefined){
+        res.json({status: 'please login'})
+    } else{
+        if (req.files){
+            let file = req.files.file
+            let filename = id + '.' + file.name.split('.')[file.name.split('.').length-1]
+            // remove duplicated file for same user, regardless of any time
+            let backgroundFiles = fs.readdirSync('../backgroundImages/');
+            backgroundFiles.forEach( (bg,key) =>{
+                if (removeType(bg) == id){
+                    fs.unlinkSync('../backgroundImages/'+bg)
+                }
+            })
+            // add to system
+            file.mv('../backgroundImages/'+filename)
+        }
+    }
+})
+
+app.post('/getBackgroundImage', (req, res)=>{
+    const cookies = req.cookies;
+    let id = cookies.id
+    if (id!==undefined){
+        let filename;
+        let backgroundFiles = fs.readdirSync('../backgroundImages/');
+        backgroundFiles.forEach( (bg,key) =>{
+            if (removeType(bg) == id){
+                filename = bg
+            }
+        })
+        res.cookie('background', 'backgroundImages/'+filename, {httpOnly: true})
+        res.json({status: 'backgroundImages/'+filename})
+    }
+})
+app.get('/backgroundImages/:filename', (req, res)=>{
+    res.sendFile(req.params.filename, { root: '../backgroundImages/' })
+})
 io.on('connection', (socket) => {
     // get the name of user
     io.to(socket.id).emit('tellMeYourName');

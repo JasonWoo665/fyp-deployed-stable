@@ -8,6 +8,7 @@ head
   link(href='https://fonts.googleapis.com/css2?family=Titillium+Web:ital@1&display=swap' rel='stylesheet')
   style 
     include ./styles/style-forum.css
+    include ./styles/style-setting.css
 header
   // NavBar Section
   .navbar
@@ -35,7 +36,66 @@ header
       input(type='text' name='q' placeholder='search ...')
       button
         i.fa.fa-search
+  .backgroundUpload
+    h2= 'upload your background image file here ↓ ↓ ↓'
+    form(method='POST' action="/" enctype="multipart/form-data" id="imgform")
+      input(type='file' name='file')
+      input(type='submit' value='Upload' id="imgSubmitted")
+    h3= 'you Current background image:'
+    .previewimgwrap
+      img(src="", alt="no profile picture uploaded yet" id="showCurrentImg")
   footer
     span
 script(type='text/javascript' src='src/forumStyleControl.js')
+script.
+  const showCurrentImg = document.getElementById("showCurrentImg")
+  const form = document.getElementById('imgform');
+  form.addEventListener('submit', imgSubmit)
+  async function imgSubmit(event){
+    event.preventDefault()
+    const result = await fetch('/getBackgroundImage', {
+        method: 'POST',
+        headers: {
+            'Content-type' : 'application/json'
+        }
+    }).then((res) => res.json())
+    showCurrentImg.src = result.status
+  }
+
+  window.onload = function() {
+    const result = fetch('/getBackgroundImage', {
+        method: 'POST',
+        headers: {
+            'Content-type' : 'application/json'
+        }
+    }).then((res) => res.json()).then((result)=>{
+      showCurrentImg.src = result.status
+    })
+  };
+
+
+
+
+  //- let showCurrentImg = document.getElementById("showCurrentImg")
+  //- const result = fetch('/getBackgroundImage', {
+  //-     method: 'POST',
+  //-     headers: {
+  //-         'Content-type' : 'application/json'
+  //-     }
+  //- }).then((res) => res.json())
+  //- if (result.status){
+  //-   console.log(result.status)
+  //- }
+
+  //- function imgSubmit(){
+  //-   const resultRedirect = fetch('/getBackgroundImage',{method: 'POST'})
+  //-     .then(response => {
+  //-       response.blob()
+  //-       console.log(response)
+  //-     })
+  //-     .then(imageBlob => {
+          
+  //-         showCurrentImg.src = imageBlob
+  //-     });
+  //- }
 

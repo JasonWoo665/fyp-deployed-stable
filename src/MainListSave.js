@@ -99,7 +99,18 @@ function adjustmonitor(pptNo){
 // streaming stuff - client side
 let localDataList = []; // list of avatar data
 let handShakeComplete = false; // only until registered name in both client and server, start gathering avatar data
-let selfBackgroundImageCanvas = "https://wallpapercave.com/dwp2x/wp4785026.jpg";
+// let selfBackgroundImageCanvas = "https://wallpapercave.com/dwp2x/wp4785026.jpg";
+let selfBackgroundImageCanvas = getBGimage();
+async function getBGimage(){
+  const result = await fetch('/getBackgroundImage', {
+      method: 'POST',
+      headers: {
+          'Content-type' : 'application/json'
+      }
+  }).then((res) => res.json()).then((result)=>{
+    selfBackgroundImageCanvas = result.status
+  })
+}
 // data ready to broadcast for rendering
 // renderDataObj: headZ, headY, headX, leftEyeOpenRatio, rightEyeOpenRatio, eyeDirX, eyeDirY, mouthOpen, mouthForm
 // update the client list on conenct and disconnect
