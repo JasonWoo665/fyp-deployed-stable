@@ -39,7 +39,7 @@ header
   .backgroundUpload
     h2= 'upload your background image file here ↓ ↓ ↓'
     form(method='POST' action="/" enctype="multipart/form-data" id="imgform")
-      input(type='file' name='file')
+      input(type='file' name='file' id="bgFile")
       input(type='submit' value='Upload' id="imgSubmitted")
     h3= 'you Current background image:'
     .previewimgwrap
@@ -53,24 +53,36 @@ script.
   form.addEventListener('submit', imgSubmit)
   async function imgSubmit(event){
     event.preventDefault()
-    const result = await fetch('/getBackgroundImage', {
+    // save iamge to database
+    let bgFile = document.getElementById('bgFile');
+    let data = new FormData()
+    data.append('file', bgFile.files[0])
+    fetch('/setBackgroundImage', {
+      method: 'POST',
+      body: data
+    }).then((res) => res.json()).then(result=>{
+      alert(result.status);
+      renderBackgroundImage();
+    })
+    
+  }
+
+  async function renderBackgroundImage(){
+    // render the image if exists
+    const renderResult = await fetch('/getBackgroundImage', {
         method: 'POST',
         headers: {
             'Content-type' : 'application/json'
         }
-    }).then((res) => res.json())
-    showCurrentImg.src = result.status
+    }).then((res) => res.json()).then(renderResult=>{
+      if (renderResult.status!='not found pic'){
+        showCurrentImg.src = renderResult.status
+      }
+    })
   }
 
   window.onload = function() {
-    const result = fetch('/getBackgroundImage', {
-        method: 'POST',
-        headers: {
-            'Content-type' : 'application/json'
-        }
-    }).then((res) => res.json()).then((result)=>{
-      showCurrentImg.src = result.status
-    })
+    renderBackgroundImage();
   };
 
 

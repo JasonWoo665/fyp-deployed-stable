@@ -4,15 +4,20 @@ html(lang="en")
         meta(charset="UTF-8")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Document
+        title Register Stargazers
+        style
+            include ./styles/style-register.css
     body 
-        .topic= "Registration"
-        form#regform
-            input(type="text" id="username" autocomplete="off" placeholder="Username") 
-            input(type="password" id="password" autocomplete="off" placeholder="Password")
-            input(type="submit" id="submit" value="Submit form")
-        br
-        button(onclick=`location.href = '`+loginUrl+`';` id="redirectButton")= 'Redirect me to Login'
+        .loginWrap
+            .topic= "Sign Up"
+            form#regform
+                input(type="text" id="Username" autocomplete="off" placeholder="Username") 
+                input(type="password" id="Password" autocomplete="off" placeholder="Password")
+                input(type="submit" id="submit" value="Sign Up")
+            .acrequest
+                p.noac=              "Have an account?"
+                |  
+                a(href=loginUrl)=    "Login Now"
 
         script. 
             const form = document.getElementById('regform');

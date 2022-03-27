@@ -161,12 +161,12 @@ app.post('/api/register', async (req, res)=>{
 })
 
 // handles file upload (for avatar background)
-app.post('/', (req, res)=>{
+app.post('/setBackgroundImage', (req, res)=>{
     const cookies = req.cookies;
     let username = cookies.username
     let id = cookies.id
     if (id===undefined || username===undefined){
-        res.json({status: 'please login'})
+        res.json({status: 'please login first!'})
     } else{
         if (req.files){
             let file = req.files.file
@@ -180,6 +180,9 @@ app.post('/', (req, res)=>{
             })
             // add to system
             file.mv('../backgroundImages/'+filename)
+            res.json({status: 'upload success!'})
+        } else{
+            res.json({status: 'please select a file first'})
         }
     }
 })
@@ -188,19 +191,27 @@ app.post('/getBackgroundImage', (req, res)=>{
     const cookies = req.cookies;
     let id = cookies.id
     if (id!==undefined){
-        let filename;
+        let filename ="";
         let backgroundFiles = fs.readdirSync('../backgroundImages/');
         backgroundFiles.forEach( (bg,key) =>{
             if (removeType(bg) == id){
                 filename = bg
             }
         })
-        res.cookie('background', 'backgroundImages/'+filename, {httpOnly: true})
-        res.json({status: 'backgroundImages/'+filename})
+        if (filename!=""){
+            res.cookie('background', 'backgroundImages/'+filename, {httpOnly: true})
+            res.json({status: 'backgroundImages/'+filename})
+        } else {
+            res.json({status: 'not found pic'})
+        }
     }
 })
+// pulbic resource getter
 app.get('/backgroundImages/:filename', (req, res)=>{
     res.sendFile(req.params.filename, { root: '../backgroundImages/' })
+})
+app.get('/csspublicresource/:filename', (req, res)=>{
+    res.sendFile(req.params.filename, { root: '../csspublicresource/' })
 })
 io.on('connection', (socket) => {
     // get the name of user
