@@ -5,14 +5,15 @@ html(lang="en")
         meta(http-equiv="X-UA-Compatible", content="IE=edge")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title Register Stargazers
+        link(rel="icon" href="/csspublicresource/webicon.png")
         style
             include ./styles/style-register.css
     body 
         .loginWrap
             .topic= "Sign Up"
             form#regform
-                input(type="text" id="Username" autocomplete="off" placeholder="Username") 
-                input(type="password" id="Password" autocomplete="off" placeholder="Password")
+                input(type="text" id="username" autocomplete="off" placeholder="Username") 
+                input(type="password" id="password" autocomplete="off" placeholder="Password")
                 input(type="submit" id="submit" value="Sign Up")
             .acrequest
                 p.noac=              "Have an account?"
@@ -28,6 +29,11 @@ html(lang="en")
                 const username = document.getElementById('username').value
                 const password = document.getElementById('password').value
 
+                if (username=="" || password==""){
+                    alert("Don't leave Username or Password blank!");
+                    return
+                }
+
                 const result = await fetch('/api/register', {
                     method: 'POST',
                     headers: {
@@ -37,7 +43,12 @@ html(lang="en")
                         username,
                         password
                     })
-                }).then((res)=> res.json())
+                }).then((res)=> res.json()).then(result=>{
+                    alert(result.status)
+                    if (result.status=='Account created successfully!'){
+                        location.href = '/login'
+                    }
+                })
                 console.log(result)
             }
 

@@ -13,6 +13,16 @@ body{
     justify-content: center;
 
 }
+@keyframes slideIn{
+    0% {
+        transform: translateY(-30%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 100;
+    }
+}
 
 .topic{
     font-size: xx-large;
@@ -23,6 +33,7 @@ body{
 }
 
 .loginWrap{
+    animation: 1s ease-out 0s 1 slideIn;
     height: 550px;
     width: 360px;
     background-color: rgba(0, 0, 0, 0.479);
@@ -47,15 +58,17 @@ input{
     width: 280px;
     height: 35px;
     border-radius: 3px;
-    padding: 3px;
+    padding: 3px 0px 3px 15px;
     appearance: none;
     -moz-appearance: none;
     -webkit-appearance: none;
     border:0px solid #ccc;
+    outline: 0px;
+    font-size: 18px;
 }
 
 #submit{
-    width: 285px;
+    width: 295px;
     height: 45px;
     background-color: rgb(161, 161, 255);
     font-size: x-large;
@@ -68,6 +81,7 @@ input{
 .acrequest{
     display: flex;
     flex-direction: row;
+    font-size: 18px;
 }
 
 .acrequest > p {
