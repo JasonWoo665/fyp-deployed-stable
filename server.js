@@ -19,7 +19,7 @@ const peerServer = ExpressPeerServer(HTTPserver, {
     debug: true,
 });
 const mongoose = require('mongoose')
-const User = require('../model/user')
+const User = require('./model/user')
 mongoose.connect('mongodb+srv://jasonwoo665:jackyxd0211@local-api-register.jcjb1.mongodb.net/local-api-register?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -53,16 +53,16 @@ app.use(cookieParser());
 // background file upload usage
 app.use(upload())
 // set paths
-app.use("/src", express.static('../src/'));
-app.use("/indexScript", express.static('../indexScript/'));
-app.use("/locateFile", express.static('../locateFile/'));
-app.use("/assets", express.static('../assets/'));
-app.use("/userMain", express.static('../'));
-app.use("/posts", express.static('../'));
-app.use("/styles", express.static('../'));
+app.use("/src", express.static('./src/'));
+app.use("/indexScript", express.static('./indexScript/'));
+app.use("/locateFile", express.static('./locateFile/'));
+app.use("/assets", express.static('./assets/'));
+app.use("/userMain", express.static('./'));
+app.use("/posts", express.static('./'));
+app.use("/styles", express.static('./'));
 // set view engine to pug
 app.set("view engine", "pug")
-app.set("views", "../")
+app.set("views", "./")
 
 // extract filen name without its type
 function removeType(filenameWithType){
@@ -172,14 +172,14 @@ app.post('/setBackgroundImage', (req, res)=>{
             let file = req.files.file
             let filename = id + '.' + file.name.split('.')[file.name.split('.').length-1]
             // remove duplicated file for same user, regardless of any time
-            let backgroundFiles = fs.readdirSync('../backgroundImages/');
+            let backgroundFiles = fs.readdirSync('./backgroundImages/');
             backgroundFiles.forEach( (bg,key) =>{
                 if (removeType(bg) == id){
-                    fs.unlinkSync('../backgroundImages/'+bg)
+                    fs.unlinkSync('./backgroundImages/'+bg)
                 }
             })
             // add to system
-            file.mv('../backgroundImages/'+filename)
+            file.mv('./backgroundImages/'+filename)
             res.json({status: 'upload success!'})
         } else{
             res.json({status: 'please select a file first'})
@@ -192,7 +192,7 @@ app.post('/getBackgroundImage', (req, res)=>{
     let id = cookies.id
     if (id!==undefined){
         let filename ="";
-        let backgroundFiles = fs.readdirSync('../backgroundImages/');
+        let backgroundFiles = fs.readdirSync('./backgroundImages/');
         backgroundFiles.forEach( (bg,key) =>{
             if (removeType(bg) == id){
                 filename = bg
@@ -208,10 +208,11 @@ app.post('/getBackgroundImage', (req, res)=>{
 })
 // pulbic resource getter
 app.get('/backgroundImages/:filename', (req, res)=>{
-    res.sendFile(req.params.filename, { root: '../backgroundImages/' })
+    res.sendFile(req.params.filename, { root: './backgroundImages/' })
 })
 app.get('/csspublicresource/:filename', (req, res)=>{
-    res.sendFile(req.params.filename, { root: '../csspublicresource/' })
+    // console.log('getting resource', req)
+    res.sendFile(req.params.filename, { root: './csspublicresource/' })
 })
 io.on('connection', (socket) => {
     // get the name of user
@@ -226,8 +227,8 @@ io.on('connection', (socket) => {
         // amend the name_id_list_server to suit the room before sending to the room
         room_suit_name_id_list_server = name_id_list_server.filter(user => user.roomId==roomId);
         io.to(roomId).emit('newSocketConnect', room_suit_name_id_list_server);
-        console.log('>>> ['+socket.id+'] connected ---> name_id_list_server: ',name_id_list_server)
-        console.log(`acutal name_id_list_server to room ${roomId}: `,room_suit_name_id_list_server)
+        // console.log('>>> ['+socket.id+'] connected ---> name_id_list_server: ',name_id_list_server)
+        // // console.log(`acutal name_id_list_server to room ${roomId}: `,room_suit_name_id_list_server)
     })
     socket.on("disconnect", (reason) => {
         let roomId;
@@ -246,7 +247,7 @@ io.on('connection', (socket) => {
                 }
             }
         }
-        console.log('roomDataListCollection after disconnection:', roomDataListCollection)
+        // console.log('roomDataListCollection after disconnection:', roomDataListCollection)
         // amend the name_id_list_server to suit the room before sending to the room
         room_suit_name_id_list_server = name_id_list_server.filter(user => user.roomId==roomId);
         io.to(roomId).emit('socketDisconnected', room_suit_name_id_list_server);

@@ -190,12 +190,12 @@ header{
     display: inline-block;
     font-family:aquire;
 }
-
 .loginName{
     font-size:30px;
     align-self: flex-end;
     font-family:aquire;
     margin-left: auto;
+    text-align: right;
 }
 
 /*Navbar for the smartphones*/
@@ -224,16 +224,19 @@ header{
     .brand{
         font-size:20px;
     }
+    .loginName{
+        font-size:10px;
+    }
 }
 
   /* Search Box styles */
 .search-box{
-    border: solid 1px #0f0a5c;
+    /* border: solid 1px #0f0a5c; */
     margin-top: 20px;
     padding: 40px;
     display:flex;
     justify-content: center;
-    box-shadow:1px 2px 3px #0f0a5c;
+    /* box-shadow:1px 2px 3px #0f0a5c; */
 }
 
 .search-box select{

@@ -7,7 +7,9 @@ var CAN_SIZE = 1020;
 
 // self defined data to link user name and socket id
 var name_id_list = []; //e.g. [{name: "henry", socketid: "12345"},...]
-const socket = io("http://127.0.0.1:3000/");
+const socket = io("127.0.0.1:3000");
+// const socket = io("fyp21075s1.cs.hku.hk/simple");
+// const socket = io("http://i7.cs.hku.hk/~chwoo/simple");
 
 // キャンバスと削除ボタン削除イベント
 function canvas_del(canid, delbtnid, i) {
@@ -18,10 +20,16 @@ function canvas_del(canid, delbtnid, i) {
   delete chara[0][i];
   delete canvas[0][i];
   // Live2D.deleteBuffer(i); //if sth not working then need to handle it, i.e. transform socketID into array max length:4294967296
+  console.log("userArea-"+i)
+  console.log(document.getElementsByClassName("userArea-"+i))
   document
-    .getElementById("can")
+    // .getElementById("can")
+    .getElementsByClassName("userArea-"+i)[0]
     .removeChild(document.getElementById("namediv-" + canid));
-  document.getElementById("can").removeChild(document.getElementById(canid));
+    document
+    // .getElementById("can")
+    .getElementsByClassName("userArea-"+i)[0]
+    .removeChild(document.getElementById(canid));
   //document.getElementById("can").removeChild(document.getElementById(delbtnid));
 }
 
