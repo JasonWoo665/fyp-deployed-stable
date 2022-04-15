@@ -1,0 +1,8 @@
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+
+xsetroot -solid grey
+vncconfig -iconic &
+# testing
+#dbus-launch --exit-with-session startxfce4 &
+startxfce4 &

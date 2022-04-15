@@ -4,15 +4,13 @@ This is my final year project in The University of Hong Kong as a computer scien
 It is a web application that allows people to do real time video communication, just like zooming. The difference is that the video is replaced by an avatar.
 
 ## Current progress
- - the function of changing avatars
- - the function of uploading custom backgrounds 
- - database saving the background images
+ - logout function
  - styles of pages
-
 
 ## Future work
  - better eyeball tracking A.I
  - voice changer 
+ - solve minimist vulnerability issue
 
 ## Credits
 [1. Tutorial for styling a forum page](https://www.youtube.com/watch?v=knGk9aUr4Do&t=198s)

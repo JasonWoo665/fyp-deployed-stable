@@ -42,7 +42,6 @@ html(lang="en")
                 }).then((res) => res.json())
 
                 if (result.status === 'ok'){
-                    console.log('Got the token: ',result.data)
                     //- POST request with body equal on data in JSON format
                     const customID=JSON.parse(atob(result.data.split(".")[1])).id;
                     const resultRedirect = await fetch(mainAPIUrl, {
@@ -54,9 +53,7 @@ html(lang="en")
                             username,
                             customID
                         })
-                    //- }).then((res) => location.href = mainUrl+JSON.parse(atob(result.data.split(".")[1])).id)
                     }).then((res)=>{
-                        //- location.href = mainUrl+'/'+ JSON.parse(atob(result.data.split(".")[1])).id+"&333"
                         location.href = mainUrl
                     })
                 }

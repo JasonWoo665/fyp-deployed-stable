@@ -1,56 +1,67 @@
-// streaming stuff - server side
+// The main server side code
 const express = require('express');
 var cors = require('cors');
 const app = express();
 app.use(cors())
-const http = require('http');
-const HTTPserver = http.createServer(app);
-const io = require('socket.io')(HTTPserver, {
+const http = require('https');
+const fs = require('fs');
+require('dotenv').config()
+
+// https certificate
+const options = {
+	key: fs.readFileSync('/etc/letsencrypt/live/fyp21075s1.cs.hku.hk/privkey.pem'),
+	cert: fs.readFileSync('/etc/letsencrypt/live/fyp21075s1.cs.hku.hk/fullchain.pem')
+};
+app.listen(8080, console.log("Server running"));
+const HTTPSserver = http.createServer(options, app);
+const io = require('socket.io')(HTTPSserver, {
     cors: {
         origin : "*",
+        methods: ["GET", "POST"],
+        credentials: true,
+        transports: ['websocket', 'polling']
     },
+    allowEIO3: true
 })
-// for register usage
+
+// for user registration
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const cookieParser = require('cookie-parser');
 const { ExpressPeerServer } = require("peer");
-const peerServer = ExpressPeerServer(HTTPserver, {
+const peerServer = ExpressPeerServer(HTTPSserver, {
     debug: true,
 });
 const mongoose = require('mongoose')
 const User = require('./model/user')
-mongoose.connect('mongodb+srv://jasonwoo665:jackyxd0211@local-api-register.jcjb1.mongodb.net/local-api-register?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGO_CONNECT, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-// for login usage
+// for user login
 const jwt = require('jsonwebtoken')
-const JWT_SECRET = '32pvutywoh#cgiwao(&%^$U#Y@;qrfhoq3pfo72 39fj,gp90tu004yb445jdqadpso||alsavmvkljoetw[qpavmknhug'
+const JWT_SECRET = process.env.JWT_SECRET
 
-// background file upload usage
+// for background file upload
 const upload = require('express-fileupload')
-const fs = require('fs');
 
-// for socket io identification
+// for socket io identification in different room
 let roomDataListCollection = {}     // a wrapper of dataList in different rooms
                                     //e.g  {'room1': 'dataList', 'room2': 'dataList1', 'room3': 'dataList2'}
-// let dataList = []                   //e.g. [ {{data: ...}, {aspect: ...}}, {{data: ...}, {aspect: ...}} ,...]
-// self defined data to link user name and socket id
+// let dataList = []                //e.g. [ {{data: ...}, {aspect: ...}}, {{data: ...}, {aspect: ...}} ,...]
+// to link user name and socket id
 var name_id_list_server = []        //e.g. [{name: "henry", socketid: "12345"},...]
-// specialzied for peerjs
+// for peer js
 let roomSocketList = {}             // e.g. 
                                     // { 
                                     //   roomid1:   [ { peerid: 123, socketid: 987, name: 'john' }, { peerid: 321, socketid: 876, name: 'david' } ],
                                     //   roomid2:   [ { peerid: 456, socketid: 789, name: 'dead' }, { peerid: 654, socketid: 678, name: 'henry' } ] 
                                     // }
 
-// peerjs video call
+// middlewares
 app.use("/peerjs", peerServer);
-// for register usage
 app.use(bodyParser.json());
 app.use(cookieParser());
-// background file upload usage
 app.use(upload())
 // set paths
 app.use("/src", express.static('./src/'));
@@ -64,7 +75,12 @@ app.use("/styles", express.static('./'));
 app.set("view engine", "pug")
 app.set("views", "./")
 
-// extract filen name without its type
+/** 
+ * extract filen name without its type
+ * 
+ * @param {string} filenameWithType    a file name with its type
+ * @return {string} a file name with its type at the end
+*/
 function removeType(filenameWithType){
     let temparr = filenameWithType.split('.')
     temparr.pop()
@@ -78,13 +94,6 @@ app.post('/api/createCookie', (req, res)=>{
     res.cookie('id', id, {httpOnly: true})
     return res.json({status: 'ok'})
 })
-
-// app.get('/readcookies', (req, res)=>{
-//     const cookies = req.cookies;
-//     console.log(cookies)
-//     res.json(cookies)
-// })
-
 app.get('/userMain/:topic', (req, res) => {
     // res.sendFile('simple.html', { root: '../' })
     const cookies = req.cookies;
@@ -93,9 +102,13 @@ app.get('/userMain/:topic', (req, res) => {
     if (username === undefined) username='but please login first'
     res.render('index',{ title: req.params.topic+' discussion room ', username: username, ROOM_ID: req.params.topic})
 });
-
 app.get('/register', (req, res) => {
     res.render('register',{ loginUrl: 'login'})
+});
+app.get('/logout', (req, res) => {
+    res.clearCookie('id');
+    res.clearCookie('username');
+    res.redirect('/login');
 });
 app.get('/login', (req, res) => {
     res.render('login',{ registerUrl: 'register', mainAPIUrl: '/api/createCookie', mainUrl: 'forums'})
@@ -104,15 +117,8 @@ app.get('/forums', (req, res) => {
     const cookies = req.cookies;
     let username = cookies.username
     let id = cookies.id
-    if (username === undefined) username='but please login first'
+    if (username === undefined || id === undefined) username='but please login first'
     res.render('forums',{ username: username})
-});
-app.get('/posts/:category', (req, res) => {
-    const cookies = req.cookies;
-    let username = cookies.username
-    let id = cookies.id
-    if (username === undefined) username='but please login first'
-    res.render('posts',{ username: username})
 });
 app.get('/setting', (req, res) => {
     const cookies = req.cookies;
@@ -122,10 +128,9 @@ app.get('/setting', (req, res) => {
     res.render('setting',{ username: username})
 });
 
-// handles login stuff
+// handles login verification
 app.post('/api/login', async (req, res)=>{
     const {username, password} = req.body
-    console.log(username, password)
     const user =  await User.findOne({ username }).lean()
     if (!user){
         return res.json({status: 'error', error: 'Invalid username/password'})
@@ -138,10 +143,9 @@ app.post('/api/login', async (req, res)=>{
         return res.json({status: 'ok', data: token, username: user.username})
     }
     res.json({status: 'error', error: 'Invalid username/password'})
-    // res.json({status: 'ok', data: `${username} : ${password}`})
 })
 
-// handles register stuff
+// handles registers
 app.post('/api/register', async (req, res)=>{
     const {username, password: plainTextPassword} = req.body
     const password = await bcrypt.hash(plainTextPassword,10)
@@ -153,7 +157,6 @@ app.post('/api/register', async (req, res)=>{
         res.json({status: 'Account created successfully!'})
     }catch(error){
         if (error.code === 11000){ //duplicated key
-            // return res.json({status: 'error', error: 'Username already in use'})
             return res.json({status: 'Username already in use'})
         }
         throw error
@@ -171,19 +174,42 @@ app.post('/setBackgroundImage', (req, res)=>{
         if (req.files){
             let file = req.files.file
             let filename = id + '.' + file.name.split('.')[file.name.split('.').length-1]
-            // remove duplicated file for same user, regardless of any time
+            // one user can have only one background file in server
             let backgroundFiles = fs.readdirSync('./backgroundImages/');
             backgroundFiles.forEach( (bg,key) =>{
                 if (removeType(bg) == id){
                     fs.unlinkSync('./backgroundImages/'+bg)
                 }
             })
-            // add to system
             file.mv('./backgroundImages/'+filename)
             res.json({status: 'upload success!'})
         } else{
             res.json({status: 'please select a file first'})
         }
+    }
+})
+app.post('/setModel', (req, res)=>{
+    const cookies = req.cookies;
+    let username = cookies.username
+    let id = cookies.id
+    const {modelDefName} = req.body
+    if (id===undefined || username===undefined){
+        res.json({status: 'please login first!'})
+    } else{
+        res.cookie('modelDefName', modelDefName, {httpOnly: true})
+        res.json({status: 'select success!'})
+    }
+})
+
+// return the avatar name stored in cookie
+// return 'haru if no cookie set'
+app.post('/getMyModelCookie', (req, res)=>{
+    const cookies = req.cookies;
+    let modelDefName = cookies.modelDefName
+    if (modelDefName===undefined){
+        res.json({modelDefName: 'haru'})
+    } else{
+        res.json({modelDefName: modelDefName})
     }
 })
 
@@ -204,38 +230,76 @@ app.post('/getBackgroundImage', (req, res)=>{
         } else {
             res.json({status: 'not found pic'})
         }
+    }else{
+        res.json({status: 'please login first!'})
     }
 })
-// pulbic resource getter
+app.post('/getModelByName', (req, res)=>{
+    const {modelDefName} = req.body
+    let modelDef ={};
+    let foundModel = false;
+    let assetsFiles = fs.readdirSync('./assets/');
+    assetsFiles.forEach( (asset,key) =>{
+        if (asset == modelDefName){
+            foundModel = true;
+            const dir = `./assets/${modelDefName}/${modelDefName}.1024/`;
+            fs.readdir(dir, (err, files) => {
+                texturesList = []
+                for (let i=0; i<files.length; i++){
+                    texturesList[i] = `assets/${modelDefName}/${modelDefName}.1024/${files[i]}`
+                }
+                // forge the modelDef
+                modelDef = {
+                    "type":"Live2D Model Setting",
+                    "name":`${modelDefName}`,
+                    "model":`assets/${modelDefName}/${modelDefName}.moc`,
+                    "textures": texturesList
+                };
+                res.json(modelDef)  // will return empty if modelDef not found
+            });
+        }
+    })
+})
+// pulbic resource getters
 app.get('/backgroundImages/:filename', (req, res)=>{
     res.sendFile(req.params.filename, { root: './backgroundImages/' })
 })
 app.get('/csspublicresource/:filename', (req, res)=>{
-    // console.log('getting resource', req)
     res.sendFile(req.params.filename, { root: './csspublicresource/' })
 })
+
+// socket io server-client connections
 io.on('connection', (socket) => {
     // get the name of user
     io.to(socket.id).emit('tellMeYourName');
-    socket.on('myNameis', (username, roomId)=>{
+    socket.on('myNameis', (username, roomId, desiredAvatar)=>{
         socket.join(roomId);
         name_id_list_server.push({
             name: username,
             socketid: socket.id,
-            roomId: roomId
+            roomId: roomId,
+            avatarName: desiredAvatar
         })
-        // amend the name_id_list_server to suit the room before sending to the room
+        // remove sockets with duplicated username (prevent reconnection bug)
+        for (let user in name_id_list_server){
+            for (let compareUser in name_id_list_server){
+                if (name_id_list_server[user].name == name_id_list_server[compareUser].name && name_id_list_server[user].socketid != name_id_list_server[compareUser].socketid){
+                    name_id_list_server.splice(user, 1);
+                }
+            }
+        }
+
+        // filter the name_id_list_server list to return only name id pairs in the room
         room_suit_name_id_list_server = name_id_list_server.filter(user => user.roomId==roomId);
         io.to(roomId).emit('newSocketConnect', room_suit_name_id_list_server);
-        // console.log('>>> ['+socket.id+'] connected ---> name_id_list_server: ',name_id_list_server)
-        // // console.log(`acutal name_id_list_server to room ${roomId}: `,room_suit_name_id_list_server)
+        console.log('>>> ['+socket.id+'] connected ---> name_id_list_server: ',name_id_list_server)
     })
     socket.on("disconnect", (reason) => {
         let roomId;
-        // remove it from name list
+        // remove it from name_id_list_server
         for (const i in name_id_list_server){
             if (name_id_list_server[i].socketid==socket.id){
-                roomId = name_id_list_server[i].roomId  // identify the room id for further work
+                roomId = name_id_list_server[i].roomId
                 name_id_list_server.splice(i, 1);
             }
         }
@@ -247,8 +311,7 @@ io.on('connection', (socket) => {
                 }
             }
         }
-        // console.log('roomDataListCollection after disconnection:', roomDataListCollection)
-        // amend the name_id_list_server to suit the room before sending to the room
+        // filter the name_id_list_server list to return only name id pairs in the room
         room_suit_name_id_list_server = name_id_list_server.filter(user => user.roomId==roomId);
         io.to(roomId).emit('socketDisconnected', room_suit_name_id_list_server);
         console.log('<<< ['+socket.id+'] diconnect ---> name_id_list_server: ',name_id_list_server)
@@ -260,34 +323,30 @@ io.on('connection', (socket) => {
     }, 10);
     // manipulate asynchronous data reuturned from clients
     socket.on('returnedAvatarData', (userData, roomId) => {
-        // if a room never have any connections, init the room's datalist
+        // in case the room is not initialized in server side
         if (roomDataListCollection[roomId]==undefined || roomDataListCollection[roomId].length == 0){
             roomDataListCollection[roomId]=[]
         }
         let initData = true     // true if a user is never added to the room's datalist
-        // overwrite data respectively
         for (const serverData in roomDataListCollection[roomId]) {
             if (userData.aspect.socketOwner == roomDataListCollection[roomId][serverData].aspect.socketOwner){
                 roomDataListCollection[roomId][serverData] = userData
                 initData = false
             }
         }
-        // in case the data is not initialized
+        // in case the user data is not initialized in server side
         if (initData){
             roomDataListCollection[roomId].push(userData)
         }
-        // console.log("roomDataListCollection:", roomDataListCollection)
-        // console.log("sent out avatar:", roomDataListCollection[roomId])
         io.to(roomId).emit('usefulAvatarData', roomDataListCollection[roomId]);
     });
 
-    // peerjs video call stuff
+    // peerjs audio call
     socket.on("join-room", (roomId, userId, userName) => {
-        console.log(`joined room: ${roomId}, ${userId}, ${userName}`)
         socket.join(roomId);
         io.to(roomId).emit("user-connected", userId);
     
-        // room states
+        // in case the room is not initialized in server side
         if (roomSocketList[roomId]==undefined){
           roomSocketList[roomId] = [{ peerid: userId, socketid: socket.id, name: userName }]
         }
@@ -295,16 +354,12 @@ io.on('connection', (socket) => {
           roomSocketList[roomId].push({ peerid: userId, socketid: socket.id, name: userName })
         }
     
-        console.log('peer object list:', roomSocketList)
-    
-        // chat room server side
+        // chat room
         socket.on('send-chat-message', message => {
             io.to(roomId).emit('chat-message', { message: message, from: socket.id})
         })
-        // socket.on("message", (message) => {
-        //   io.to(roomId).emit("createMessage", message, userName);
-        // });
     });
+    // handles connection and disconnections of socket io
     socket.on('connection-request', (roomID, userID)=>{
         io.to(roomID).emit("user-connected", userID, socket.id);
     })
@@ -323,13 +378,11 @@ io.on('connection', (socket) => {
             }
           }
         }
-        // name_id_list_server handled in disconenct part for roomid issues
-        // tell all user the new roomSocketList[roomID], peerID (of the disconencted person)
         io.to(roomID).emit("user-disconnected", peerID)
     })
 });
 
-HTTPserver.listen(3000, () => {
-    console.log('listening on *:3000');
+HTTPSserver.listen(8443, () => {
+    console.log('listening on *:8443');
 });
   

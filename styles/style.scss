@@ -1,15 +1,21 @@
 // responsive vars
-$pc-media:960px;
-$pcs-media:959px;
-$pad-media:760px;
-$pads-media:759px;
-$phone-media:480px;
-$phones-media:479px;
+$pc-media:1360px;
+
+
+$topbargrey: #2e3136;
+$micbackgroundgrey: #292b2f;
+$micicongrey: #b9bbbe;
+$wordColor: #dbdcdd;
+$namecolor1: #328258;
+$namecolor2: #328258;
+$sendmsgbox: #40444a;
+$sendmsg: #9fa0a4;
+$sendmsgbg: #36393e;
+
 *{
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   padding: 0px;
   margin: 0px;
-  color: black
 }
 @mixin noDefaultAppearance ($value: none) {
   -webkit-appearance:     $value;
@@ -27,18 +33,8 @@ $phones-media:479px;
     @content;
   }
 }
-@mixin pad-width() {
-  @media all and (min-width:$pad-media) and (max-width: $pcs-media) {
-    @content;
-  }
-}
-@mixin small-pad-width() {
-  @media all and (min-width: $phone-media) and (max-width:$pads-media) {
-    @content;
-  }
-}
 @mixin phone-width() {
-  @media all and (max-width: $phones-media) {
+  @media all and (max-width: $pc-media) {
     @content;
   }
 }
@@ -50,6 +46,7 @@ $phones-media:479px;
 @mixin inline-wrap {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
 }
 @mixin verticle-wrap{
     display: flex;
@@ -65,12 +62,13 @@ $phones-media:479px;
     border-width: $borderWidth 0px 0px 0px;
     border-style: solid;
 }
-@mixin chatText($bgcolor: white, $padding: 5px){
+@mixin chatText($bgcolor: white, $padding: 5px, $textcolor: rgb(0, 0, 0)){
   padding: $padding;
   background-color: $bgcolor;
+  color: $textcolor;
 }
 body{
-    background: #C8A2C8;
+    background: $micbackgroundgrey;
     // @include inline-wrap();
     justify-content: space-between;
 }
@@ -79,30 +77,56 @@ h1{
   margin: 5px;
 }
 .content-wrap{
-  background: #8ac4f0;
+    background: rgb(54,57,62);
+    background: linear-gradient(138deg, rgba(54,57,62,1) 0%, rgba(54,57,62,1) 35%, rgba(0,0,0,1) 100%);
     @include inline-wrap();
     justify-content: space-between;
     flex-wrap: wrap;
     -webkit-flex-wrap: wrap;
+    padding: 30px 0px 100px 0px;
 }
 
 #can{
   @include verticle-wrap;
+  height: calc(580px -7px -17px -40px);
+  margin-left: 50px;
   flex-direction: row;
   -webkit-flex-wrap: wrap;
   flex-wrap: wrap;
-  justify-content: space-around;
-  max-width: 800px;
-  .user-name{
-    margin: 5px;
-    text-align: center;
-  }
-  canvas{
-    border-style: double;
-    border-width: 5px;
-    border-color: white;
-    background-image: url('https://wallpapercave.com/dwp2x/wp4785026.jpg');
-    background-size: cover;
+  padding: 30px 30px 0px 0px;
+  border-right: $sendmsg 2px solid;
+  border-right-style: outset;
+  width: 850px;
+  justify-content: center;
+  max-width: 850px;
+  max-height: 563.65px;
+
+  div[class^='userArea-'], div[class*=' userArea-']{
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: black;
+    background-image: url('../csspublicresource/avatarbg.webp');
+    height: min-content;
+    div[id^='namediv-'], div[id*=' namediv-']{
+      width: 100%;
+      padding: 10px;
+      background-color: rgba(226, 193, 193, 0.577);
+      border: none;
+      text-align: center;
+      margin-top: -42px;
+      font-weight: 500;
+      font-size: 20px;
+      color: black;
+    }
+    canvas{
+      border-style: double;
+      border-width: 5px;
+      border-color: white;
+      background-image: url('https://wallpapercave.com/dwp2x/wp4785026.jpg');
+      background-size: cover;
+    }
   }
 }
 
@@ -115,58 +139,163 @@ h1{
 }
 .text-chat-room{
     @include verticle-wrap;
-    background-color: white;
+    background-color: $sendmsgbg;
     justify-content: space-between;
-    border-radius: 5px;
+    border-radius: 15px;
+    width: 30%;
+    margin-left: auto;
+    margin-right: 50px;
+    .topic{
+        @include chatText($sendmsgbg, 5px, white);
+        border-radius: 15px 15px 0px 0px;
+        font-weight: 700;
+        font-size: 18px;
+        width: 100%;        
+        text-align: center;
+        padding: 24px 12px 24px 12px;
+        margin-bottom: 20px;
+        border-bottom: $sendmsg 2px solid;
+        border-bottom-style: outset;
+      }
     .showmsg{
       @include verticle-wrap;
-      align-items: flex-start;
-      justify-content: flex-start;
-      .topic{
-        @include chatText(rgb(223, 223, 223));
-        @include underline-box(grey);
-        width: calc(100% - 10px);
-        
-        text-align: center;
-      }
+      // align-items: flex-start;
+      // justify-content: flex-start;
+      display: flex;
+      overflow-y: scroll;
+      height: 400px;
+      border-radius: 15px;
+      
       div[class^='msg'], div[class*=' msg']{
-        @include chatText(palevioletred);
-        border-radius: 5px;
-        margin: 7px 1px 1px 1px;
+        @include chatText($sendmsg, 12px, $wordColor);
+        border-radius: 50px;
+        margin: 3px 0px 0px 0px;
+        padding: 12px 24px 12px 24px;
       }
       div[class^='mymsg'], div[class*=' mymsg']{
-        @include chatText(rgb(127, 184, 250));
-        border-radius: 5px;
+        @include chatText(#289ddf, 12px, white);
+        padding: 12px 24px 12px 24px;
+        border-radius: 50px;
         align-self: flex-end;
-        margin: 7px 7px 0px 7px;
+        margin: 15px 17px 0px 50px;
       }
       .wrapMsg{
-        @include chatText(rgb(4, 226, 226));
-        border-radius: 5px;
-        margin: 3px 3px 0px 7px;
+        @include chatText(transparent, 5px, $wordColor);
+        border-radius: 18px;
+        margin: 5px 3px 0px 8px;
+        padding: 7px 17px 0px 13px;
+        align-self: flex-start
       }
     }
     .chatWrap{
+      
       @include verticle-wrap();
       .ChatTarget{
-        @include chatText(white, 7px);
+        @include chatText(#722ea5, 7px);
         @include upperline-box(rgb(204, 204, 204), 3px);
+        display: none;
       }
       #send-container{
         @include inline-wrap();
+        padding: 7px 10px 17px 10px;
+        border-radius: 0px 0px 15px 15px;
+        background-color: $sendmsgbg;
         #message-input{
-          @include chatText(lightgrey, 7px);
+          @include chatText($sendmsgbox, 7px, $wordColor);
+          padding: 7px 7px 7px 15px;
           @include noDefaultAppearance;
-          border-radius: 7px;
+          border-radius: 5px;
+          margin-right: 5px;
+          width: calc(100% - 45px);
+          border: none;
+          outline: none;  
+          height: 40px;
+          font-family: inherit;
         }
         #sendButton{
           display: inline; 
-          width: 30px; 
-          height: 100%;
+          width: 40px; 
           border-radius: 5px;
-          background-color: #2e99eb;
+          background-color: #289ddf;
           cursor: pointer;
+          text-align: center;
         }
       }
     }
+}
+
+.videocalls{
+  margin-top: -90px;
+  margin-right: 50px;
+  .options__button{
+    background-color: $micbackgroundgrey;
+  }
+  justify-content: flex-end;
+}
+
+.navbar{
+  padding-bottom: 25px;
+  border-bottom: $sendmsg 2px solid;
+  border-bottom-style: outset;
+  background: url(../csspublicresource/darktheme.jpeg);
+}
+
+canvas[id^='glcanvas'], div[id*=' glcanvas']{
+  width: 177.23px;
+  height: 245px;
+}
+#can{
+  flex-direction: row;
+  align-items: center;
+}
+
+@font-face {
+  font-family: 'aquire';
+  src:url('/csspublicresource/aquire.otf');
+}
+h1{
+  font-family:aquire;
+  font-size: 25px;
+  padding: 23px;
+  margin: 0px;
+  border-bottom: #9fa0a4 2px solid;
+  border-bottom-style: double;
+}
+
+@media only screen and (max-width: $pc-media) {
+  .content-wrap{
+    height: 100vh;
+  }
+  #can {
+    width: 100vw;
+    max-width: 100vw;
+    margin: 10px;
+    padding: 0px;
+    canvas[id^='glcanvas']{
+      width: 160px;
+      height: 221.1px;
+    }
+  }
+  .text-chat-room{
+    margin: 30px 10px 0px auto;
+    width: 300px;
+    height: 0px;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    .topic{
+      cursor: pointer;
+    }
+    .showmsg{
+      height: 0px;
+    }
+    .chatWrap{
+      display: none;
+    }
+  }
+  .videocalls{
+    bottom: -150px;
+    right: 0px;
+    position: absolute;
+  }
 }

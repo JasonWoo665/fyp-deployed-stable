@@ -1,9 +1,9 @@
-// main facemesh stuff is here
+// A script used to handle landmark coordinates returned from facemesh
 const videoElement = document.getElementsByClassName('input_video')[0];
 const canvasElement = document.getElementsByClassName('output_canvas')[0];
 const canvasCtx = canvasElement.getContext('2d');
 
-// variables for live2d
+// the object used to control the motion of live2D models
 var headZ, headY, headX, leftEyeOpenRatio, rightEyeOpenRatio, eyeDirX, eyeDirY, mouthOpen, mouthForm;
 var renderDataObj = {
   data:{
@@ -22,13 +22,13 @@ var renderDataObj = {
     background: null
   }
 };
-let eyeOpenThreshold =0.5
-window.addEventListener("click", function(){ console.log(eyeDirY) });
 
+let eyeOpenThreshold =0.5
+
+// calculate the motions of facial features
 function onResults(results) {
   canvasCtx.save();
   canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-//   canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
   if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
     for (const landmarks of results.multiFaceLandmarks) {
       drawConnectors(canvasCtx, landmarks, FACEMESH_TESSELATION,
@@ -74,12 +74,12 @@ function onResults(results) {
     // head-x orientation
     headX = Math.sin(headRight[2]-headLeft[2])*180/Math.PI*3
 
-    // eyes open or close
+    // eyes open and close
     leftEyeOpenRatio = Math.tan((eyeLeftLipBot[1]- eyeLeftLipTop[1])/(leftIris[3][1]-leftIris[1][1]))
     leftEyeOpenRatio = leftEyeOpenRatio*leftEyeOpenRatio
     rightEyeOpenRatio = Math.tan((eyeRightLipBot[1]- eyeRightLipTop[1])/(rightIris[3][1]-rightIris[1][1]))
     rightEyeOpenRatio = rightEyeOpenRatio*rightEyeOpenRatio
-    //adjust the ratio if head tilted
+    // adjust detection of eyes open and close when head is tilted
     eyeOpenThreshold = ((headZ|| headY|| headX)>10)||((headZ|| headY|| headX)<-10)?0.3:0.5
     rightEyeOpenRatio = rightEyeOpenRatio>eyeOpenThreshold?1:rightEyeOpenRatio
     leftEyeOpenRatio = leftEyeOpenRatio>eyeOpenThreshold?1:leftEyeOpenRatio
@@ -87,48 +87,23 @@ function onResults(results) {
     // eyeball location
     let leftIrisCenter = [(leftIris[0][0]+leftIris[1][0]+leftIris[2][0]+leftIris[3][0])/4, (leftIris[0][1]+leftIris[1][1]+leftIris[2][1]+leftIris[3][1])/4]
     let rightIrisCenter = [(rightIris[0][0]+rightIris[1][0]+rightIris[2][0]+rightIris[3][0])/4, (rightIris[0][1]+rightIris[1][1]+rightIris[2][1]+rightIris[3][1])/4]
-    // let leftEyeCenter = [0,0]
-    // let rightEyeCenter = [0,0]
-    // for (let i=0; i<FACEMESH_RIGHT_EYE.length; i++){
-    //     leftEyeCenter[0] = leftEyeCenter[0] + results.multiFaceLandmarks[0][FACEMESH_RIGHT_EYE[i][0]].x
-    //     leftEyeCenter[1] = leftEyeCenter[1] + results.multiFaceLandmarks[0][FACEMESH_RIGHT_EYE[i][0]].y
-    // }
-    // leftEyeCenter[0] = leftEyeCenter[0]/FACEMESH_RIGHT_EYE.length
-    // leftEyeCenter[1] = leftEyeCenter[1]/FACEMESH_RIGHT_EYE.length
-    // for (let i=0; i<FACEMESH_LEFT_EYE.length; i++){
-    //     rightEyeCenter[0] = rightEyeCenter[0] + results.multiFaceLandmarks[0][FACEMESH_LEFT_EYE[i][0]].x
-    //     rightEyeCenter[1] = rightEyeCenter[1] + results.multiFaceLandmarks[0][FACEMESH_LEFT_EYE[i][0]].y
-    // }
-    // rightEyeCenter[0] = rightEyeCenter[0]/FACEMESH_LEFT_EYE.length
-    // rightEyeCenter[1] = rightEyeCenter[1]/FACEMESH_LEFT_EYE.length
     let leftEyeHorizon = [[results.multiFaceLandmarks[0][33].x, results.multiFaceLandmarks[0][33].y], [results.multiFaceLandmarks[0][133].x, results.multiFaceLandmarks[0][133].y]]
     let rightEyeHorizon = [[results.multiFaceLandmarks[0][362].x, results.multiFaceLandmarks[0][362].y], [results.multiFaceLandmarks[0][263].x, results.multiFaceLandmarks[0][263].y]]
     let leftHorizonRatio = Math.abs((leftEyeHorizon[1][0]-leftIrisCenter[0])/(leftEyeHorizon[1][0]-leftEyeHorizon[0][0]))
     let rightHorizonRatio = Math.abs((rightEyeHorizon[1][0]-rightIrisCenter[0])/(rightEyeHorizon[1][0]-rightEyeHorizon[0][0]))
     eyeDirX = (leftHorizonRatio+rightHorizonRatio)/2
     eyeDirX = Math.tan(eyeDirX*4-2)*-1.3
-    // verticle 5sick do
     let leftVertRatio = Math.abs((eyeLeftLipBot[1]-leftIrisCenter[1])/(eyeLeftLipBot[1]-eyeLeftLipTop[1]))
     let rightVertRatio = Math.abs((eyeRightLipBot[1]-rightIrisCenter[1])/(eyeRightLipBot[1]-eyeRightLipTop[1]))
- 
     eyeDirY = (leftVertRatio+rightVertRatio)/2
-    // eyeDirY = Math.tan(Math.tan(eyeDirY*4-2))*2
 
     // mouth location
     mouthOpen = Math.abs((mouthBot[1]-mouthTop[1])/(rightIris[3][1]-rightIris[1][1])) //using right eye as comparison
     // smile or not
     mouthForm = twoPtDist(mouthTop,mouthBot)/twoPtDist(mouthLeft,mouthRight)
     mouthForm = Math.tan(mouthForm*-2+0.7)
-
-
-    canvasCtx.beginPath()
-    // canvasCtx.rect(rightIris[3][0]*canvasElement.width,rightIris[3][1]*canvasElement.height, 50, 50)
-    canvasCtx.moveTo(0*canvasElement.width,0*canvasElement.height);
-    canvasCtx.lineTo(mouthBot[0]*canvasElement.width,mouthBot[1]*canvasElement.height);
-    canvasCtx.lineTo(canvasElement.width,canvasElement.height);
-    canvasCtx.stroke()
     
-    // output the stream object
+    // output object for streaming
     renderDataObj = {
       data:{
         headZ: headZ, 

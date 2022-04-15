@@ -1,0 +1,39 @@
+0 verbose cli [
+0 verbose cli   '/home/fyp21075/.nvm/versions/node/v14.4.0/bin/node',
+0 verbose cli   '/home/fyp21075/.nvm/versions/node/v14.4.0/bin/npm',
+0 verbose cli   'list',
+0 verbose cli   'socket.io'
+0 verbose cli ]
+1 info using npm@8.5.5
+2 info using node@v14.4.0
+3 timing npm:load:whichnode Completed in 1ms
+4 timing config:load:defaults Completed in 3ms
+5 timing config:load:file:/home/fyp21075/.nvm/versions/node/v14.4.0/lib/node_modules/npm/npmrc Completed in 15ms
+6 timing config:load:builtin Completed in 15ms
+7 timing config:load:cli Completed in 2ms
+8 timing config:load:env Completed in 0ms
+9 timing config:load:project Completed in 2ms
+10 timing config:load:file:/home/fyp21075/.npmrc Completed in 0ms
+11 timing config:load:user Completed in 0ms
+12 timing config:load:file:/home/fyp21075/.nvm/versions/node/v14.4.0/etc/npmrc Completed in 0ms
+13 timing config:load:global Completed in 0ms
+14 timing config:load:validate Completed in 1ms
+15 timing config:load:credentials Completed in 0ms
+16 timing config:load:setEnvs Completed in 0ms
+17 timing config:load Completed in 25ms
+18 timing npm:load:configload Completed in 25ms
+19 timing npm:load:setTitle Completed in 1ms
+20 timing config:load:flatten Completed in 3ms
+21 timing npm:load:display Completed in 5ms
+22 verbose logfile /home/fyp21075/.npm/_logs/2022-04-11T18_28_17_548Z-debug-0.log
+23 timing npm:load:logFile Completed in 5ms
+24 timing npm:load:timers Completed in 0ms
+25 timing npm:load:configScope Completed in 0ms
+26 timing npm:load Completed in 37ms
+27 timing arborist:ctor Completed in 2ms
+28 silly logfile start cleaning logs, removing 17 files
+29 timing arborist:ctor Completed in 0ms
+30 timing command:list Completed in 395ms
+31 verbose exit 0
+32 timing npm Completed in 1322ms
+33 info ok

@@ -11,44 +11,73 @@ head
     include ./styles/style-forum.css
     include ./styles/style-setting.css
 header
-  // NavBar Section
-  .navbar
-    nav#navigation.navigation.hide
-      span#close-icon.close-icon(onclick='showIconBar()')
-        i.fa.fa-close
-      ul.nav-list
-        li.nav-item
-          a(href='./forums') Forums
-        //- li.nav-item
-        //-   a(href='./posts') Posts
-        li.nav-item
-          a(href='./setting') Setting
-    a#iconBar.bar-icon(onclick='hideIconBar()')
-      i.fa.fa-bars
-    .brand Stargazers
-    .loginName= "Welcome "+username+"!"
-  // SearchBox Section
-  .search-box
-    div
-      select(name='' id='')
-        option(value='Everything') Heated News
-        option(value='Titles') Education
-        option(value='Descriptions') Films and movies
-      input(type='text' name='q' placeholder='search ...')
-      button
-        i.fa.fa-search
-  .backgroundUpload
-    h2= 'upload your background image file here ↓ ↓ ↓'
+input#hamburgercheck(type='checkbox' name='slider')
+nav#slidebar1
+  .hamburger
+    .line.line1
+    .line.line2
+    .line.line3
+  a(href='./forums')= 'Forums'
+  a(href='./setting')= 'Settings'
+  a(href='./logout')= 'Logout'
+
+// NavBar Section
+.navbar
+  .brand Stargazers
+  .loginName= "Welcome "+username+"!"
+
+.search-box
+  div
+    select(name='' id='')
+      option(value='Everything') Heated News
+      option(value='Titles') Education
+      option(value='Descriptions') Films and movies
+    input(type='text' name='q' placeholder='search ...')
+    button
+      i.fa.fa-search
+.backgroundUpload
+  h1= 'UPLOAD CUSTOM BACKGROUND'
+  h3= 'Upload your desired background image here: '
+  .filedrop
     form(method='POST' action="/" enctype="multipart/form-data" id="imgform")
       input(type='file' name='file' id="bgFile")
       input(type='submit' value='Upload' id="imgSubmitted")
-    h3= 'you Current background image:'
-    .previewimgwrap
-      img(src="", alt="no profile picture uploaded yet" id="showCurrentImg")
-  footer
-    span
-script(type='text/javascript' src='src/forumStyleControl.js')
+  h3= 'Your current background image:'
+  .previewimgwrap
+    img(src="", alt="no profile picture uploaded yet" id="showCurrentImg")
+.modelSettings
+  label(for='avatars') Choose your avatar:
+  select#avatars(name='avatarList' form='avatarForm')
+    option(value='dragon') dragon
+    option(value='haru') haru
+    option(value='shizuku') shizuku
+    option(value='wanko') wanko
+  p= "* preview your avatar in one of the rooms"
+  span= "current avatar choice:" 
+  #showAvatarChoice
+footer
+  span
 script.
+  const showAvatarChoice = document.getElementById("showAvatarChoice")
+  const avatarOption = document.getElementById("avatars")
+  avatarOption.addEventListener('change', (event)=>{
+    showAvatarChoice.innerText = event.target.value
+    avatarChoiceSubmit(event.target.value)
+    
+  });
+
+  async function avatarChoiceSubmit(modelDefName){
+    fetch('/setModel', {
+      method: 'POST',
+      headers: {
+        'Content-type' : 'application/json'
+      },
+      body: JSON.stringify({
+        modelDefName
+      })
+    })
+  }
+
   const showCurrentImg = document.getElementById("showCurrentImg")
   const form = document.getElementById('imgform');
   form.addEventListener('submit', imgSubmit)
@@ -65,11 +94,10 @@ script.
       alert(result.status);
       renderBackgroundImage();
     })
-    
   }
 
   async function renderBackgroundImage(){
-    // render the image if exists
+    // render the image if it exists
     const renderResult = await fetch('/getBackgroundImage', {
         method: 'POST',
         headers: {
@@ -83,32 +111,6 @@ script.
   }
 
   window.onload = function() {
+    avatarChoiceSubmit('dragon');
     renderBackgroundImage();
   };
-
-
-
-
-  //- let showCurrentImg = document.getElementById("showCurrentImg")
-  //- const result = fetch('/getBackgroundImage', {
-  //-     method: 'POST',
-  //-     headers: {
-  //-         'Content-type' : 'application/json'
-  //-     }
-  //- }).then((res) => res.json())
-  //- if (result.status){
-  //-   console.log(result.status)
-  //- }
-
-  //- function imgSubmit(){
-  //-   const resultRedirect = fetch('/getBackgroundImage',{method: 'POST'})
-  //-     .then(response => {
-  //-       response.blob()
-  //-       console.log(response)
-  //-     })
-  //-     .then(imageBlob => {
-          
-  //-         showCurrentImg.src = imageBlob
-  //-     });
-  //- }
-

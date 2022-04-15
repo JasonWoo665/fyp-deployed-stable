@@ -1,0 +1,38 @@
+0 verbose cli [
+0 verbose cli   '/home/fyp21075/.nvm/versions/node/v14.4.0/bin/node',
+0 verbose cli   '/home/fyp21075/.nvm/versions/node/v14.4.0/bin/npm',
+0 verbose cli   'config',
+0 verbose cli   '--loglevel=warn',
+0 verbose cli   'get',
+0 verbose cli   'prefix'
+0 verbose cli ]
+1 info using npm@8.5.5
+2 info using node@v14.4.0
+3 timing npm:load:whichnode Completed in 0ms
+4 timing config:load:defaults Completed in 2ms
+5 timing config:load:file:/home/fyp21075/.nvm/versions/node/v14.4.0/lib/node_modules/npm/npmrc Completed in 12ms
+6 timing config:load:builtin Completed in 12ms
+7 timing config:load:cli Completed in 3ms
+8 timing config:load:env Completed in 0ms
+9 timing config:load:project Completed in 14ms
+10 timing config:load:file:/home/fyp21075/.npmrc Completed in 1ms
+11 timing config:load:user Completed in 1ms
+12 timing config:load:file:/home/fyp21075/.nvm/versions/node/v14.4.0/etc/npmrc Completed in 0ms
+13 timing config:load:global Completed in 0ms
+14 timing config:load:validate Completed in 1ms
+15 timing config:load:credentials Completed in 17ms
+16 timing config:load:setEnvs Completed in 2ms
+17 timing config:load Completed in 52ms
+18 timing npm:load:configload Completed in 52ms
+19 timing npm:load:setTitle Completed in 1ms
+20 timing config:load:flatten Completed in 5ms
+21 timing npm:load:display Completed in 9ms
+22 verbose logfile /home/fyp21075/.npm/_logs/2022-04-15T02_55_24_035Z-debug-0.log
+23 timing npm:load:logFile Completed in 7ms
+24 timing npm:load:timers Completed in 0ms
+25 timing npm:load:configScope Completed in 0ms
+26 timing npm:load Completed in 70ms
+27 timing command:config Completed in 2ms
+28 verbose exit 0
+29 timing npm Completed in 970ms
+30 info ok

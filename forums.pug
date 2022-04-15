@@ -10,33 +10,32 @@ head
   style 
     include ./styles/style-forum.css
 header
-  // NavBar Section
-  .navbar
-    nav#navigation.navigation.hide
-      span#close-icon.close-icon(onclick='showIconBar()')
-        i.fa.fa-close
-      ul.nav-list
-        li.nav-item
-          a(href='./forums') Forums
-        //- li.nav-item
-        //-   a(href='./posts') Posts
-        li.nav-item
-          a(href='./setting') Setting
-    a#iconBar.bar-icon(onclick='hideIconBar()')
-      i.fa.fa-bars
-    .brand Stargazers
-    .loginName= "Welcome "+username+"!"
 
-  // SearchBox Section
-  .search-box
-    div
-      select(name='' id='')
-        option(value='Everything') Heated News
-        option(value='Titles') Education
-        option(value='Descriptions') Films and movies
-      input(type='text' name='q' placeholder='search ...')
-      button
-        i.fa.fa-search
+input#hamburgercheck(type='checkbox' name='slider')
+nav#slidebar1
+  .hamburger
+    .line.line1
+    .line.line2
+    .line.line3
+  a(href='./forums')= 'Forums'
+  a(href='./setting')= 'Settings'
+  a(href='./logout')= 'Logout'
+
+// NavBar Section
+.navbar
+  .brand Stargazers
+  .loginName= "Welcome "+username+"!"
+
+// SearchBox Section
+.search-box
+  div
+    select(name='' id='')
+      option(value='Everything') Heated News
+      option(value='Titles') Education
+      option(value='Descriptions') Films and movies
+    input(type='text' name='q' placeholder='search ...')
+    button
+      i.fa.fa-search
 .container
   .subforum
     .subforum-title
@@ -138,7 +137,6 @@ header
   br
 footer
   span
-script(type='text/javascript' src='src/forumStyleControl.js')
 script.
   function init(){
     const subforums = document.getElementsByClassName("subforum-description subforum-column");

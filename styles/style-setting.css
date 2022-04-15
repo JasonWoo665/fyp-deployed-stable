@@ -1,16 +1,209 @@
 * {
-    margin: 0px;
-    padding: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
-.previewimgwrap{
-    width: 400px;
-    height:400px;
-    border:solid
-  }
- 
-img{
-     width: 100%;
-     height: 100%;
+body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.backgroundUpload {
+  padding: 40px 100px 40px 100px;
+  background-color: #0000007d;
+  border: 2px solid rgba(255, 255, 255, 0.835);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-item-align: center;
+      align-self: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  height: 100vh;
+  font-family: Noto Sans,sans-serif;
+}
+
+.backgroundUpload h1 {
+  font-size: 30px;
+}
+
+.backgroundUpload h3 {
+  font-size: 20px;
+}
+
+.backgroundUpload .filedrop {
+  border: 2px dashed rgba(217, 217, 217, 0.804);
+  width: 60%;
+}
+
+.backgroundUpload .filedrop form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 140px;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.backgroundUpload .filedrop form #imgSubmitted, .backgroundUpload .filedrop form #bgFile {
+  font-size: 15px;
+  width: 120px;
+  height: 40px;
+  cursor: pointer;
+  color: black;
+  background-color: white;
+  border-radius: 7px;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  border: 0px;
+  border-radius: 5px;
+}
+
+.backgroundUpload .filedrop form #imgSubmitted:hover, .backgroundUpload .filedrop form #bgFile:hover {
+  color: white;
+  background-color: #259f6c;
+}
+
+.backgroundUpload .filedrop form #bgFile {
+  cursor: pointer;
+  width: 80%;
+  font-weight: 100;
+}
+
+.backgroundUpload .previewimgwrap {
+  width: 400px;
+  height: 400px;
+  border: solid;
+  border-style: double;
+  background-image: url("/csspublicresource/transparent.png");
+}
+
+.backgroundUpload img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
      object-fit: contain;
 }
+
+.modelSettings {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 40px 100px 40px 100px;
+  height: 300px;
+  width: 707px;
+  border: 2px solid rgba(255, 255, 255, 0.831);
+  -ms-flex-item-align: center;
+      align-self: center;
+  margin-top: 30px;
+  font-size: 20px;
+  /* <select> styles */
+}
+
+.modelSettings select {
+  font-size: 16px;
+  margin-top: 30px;
+  /* Reset */
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  border: 0;
+  outline: 0;
+  /* Personalize */
+  width: 20em;
+  height: 3em;
+  padding: 0em 7em 0em 2em;
+  background: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg) no-repeat right 0.8em center/1.4em, -webkit-gradient(linear, right top, left top, color-stop(3em, rgba(255, 255, 255, 0.3)), color-stop(3em, rgba(255, 255, 255, 0.2)));
+  background: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg) no-repeat right 0.8em center/1.4em, linear-gradient(to left, rgba(255, 255, 255, 0.3) 3em, rgba(255, 255, 255, 0.2) 3em);
+  color: white;
+  border-radius: 0.25em;
+  -webkit-box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+          box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  /* <option> colors */
+  /* Remove focus outline */
+  /* Remove IE arrow */
+}
+
+.modelSettings select option {
+  color: inherit;
+  background-color: #320a28;
+}
+
+.modelSettings select:focus {
+  outline: none;
+}
+
+.modelSettings select::-ms-expand {
+  display: none;
+}
+
+.modelSettings p {
+  margin-top: 10px;
+  font-size: small;
+}
+
+.modelSettings #showAvatarChoice {
+  font-size: 25px;
+}
+
+@media only screen and (max-width: 600px) {
+  .backgroundUpload {
+    border-style: none;
+    height: auto;
+    width: 100vw;
+  }
+  .backgroundUpload h1 {
+    font-size: 20px;
+    width: 100vw;
+    text-align: center;
+  }
+  .backgroundUpload h3 {
+    font-size: 15px;
+    width: 100vw;
+    text-align: center;
+    margin-top: 20px;
+  }
+  .backgroundUpload .filedrop {
+    width: 80vw;
+    margin-top: 10px;
+  }
+  .backgroundUpload .previewimgwrap {
+    width: 90vw;
+    height: 400px;
+    border: solid;
+    margin-top: 20px;
+  }
+  .modelSettings {
+    border-style: none;
+  }
+}
+/*# sourceMappingURL=style-setting.css.map */
