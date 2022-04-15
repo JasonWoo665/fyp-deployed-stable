@@ -3,6 +3,10 @@ This is my final year project in The University of Hong Kong as a computer scien
 
 It is a web application that allows people to do real time video communication, just like zooming. The difference is that the video is replaced by an avatar.
 
+# Demo
+Thanks to a virtual machine server provided by HKUCS department, we are able to deploy the project with nginx.
+[link to the website](https://www.youtube.com/watch?v=knGk9aUr4Do&t=198s) : require web camera and microphone (optional)
+
 ## Current progress
  - complete
 
