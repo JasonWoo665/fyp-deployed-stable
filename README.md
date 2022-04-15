@@ -5,7 +5,8 @@ It is a web application that allows people to do real time video communication, 
 
 # Demo
 Thanks to a virtual machine server provided by HKUCS department, we are able to deploy the project with nginx.
-[link to the website](https://www.youtube.com/watch?v=knGk9aUr4Do&t=198s) : require web camera and microphone (optional)
+
+[link to the website](https://fyp21075s1.cs.hku.hk/login) : require web camera and microphone (optional)
 
 ## Current progress
  - complete
